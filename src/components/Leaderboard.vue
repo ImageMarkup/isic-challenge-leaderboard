@@ -26,19 +26,22 @@
         {{ submission.approach }}
       </td>
       <td>
-        <template v-if="arxivId(submission.documentationUrl)">
-          <a :href="submission.documentationUrl">{{ arxivId(submission.documentationUrl) }}</a>
+        <template v-if="submission.documentationUrl">
+          <a :href="submission.documentationUrl">
+            <v-icon color="green">assignment</v-icon>
+          </a>
         </template>
         <template v-else>
           <v-icon color="red">close</v-icon>
-          <v-alert
-            v-if="admin"
-            :value="true"
-            color="info"
-          >
-            <code>{{ submission.documentationUrl }}</code>
-          </v-alert>
         </template>
+        <v-alert
+          v-if="admin"
+          :value="true"
+          color="info"
+        >
+          <code>{{ submission.documentationUrl }}</code>
+          <v-icon @click.stop="clearDocumentation(submission._id)" color="red">delete</v-icon>
+        </v-alert>
       </td>
       <td>
         <template v-if="submission.meta.usesExternalData">
@@ -88,30 +91,7 @@ export default {
   },
 
   async created() {
-    try {
-      const submissionsResponse = await http.request({
-        method: 'get',
-        url: 'covalic_submission',
-        params: {
-          limit: 0,
-          offset: 0,
-          sort: 'overallScore',
-          sortdir: -1,
-          phaseId: this.phaseId,
-        },
-        withCredentials: false,
-        responseType: 'json',
-      });
-      submissionsResponse.data.forEach((submission, index) => {
-        submission.rank = index + 1;
-      });
-
-      this.submissions = submissionsResponse.data;
-    } catch (e) {
-      // TODO: Covalic may 401 here if the phase scores are hidden and the user isn't logged in
-    }
-
-    this.loading = false;
+    await this.loadData();
   },
 
   computed: {
@@ -160,14 +140,51 @@ export default {
   },
 
   methods: {
-    arxivId(documentationUrl) {
-      // TODO: make this a computed property of a sub-component
-      const arxivRegex = /^https?:\/\/arxiv\.org\/abs\/([0-9.]+)$/;
-      const arxivMatch = arxivRegex.exec(documentationUrl);
-      return arxivMatch ? arxivMatch[1] : null;
+    async clearDocumentation(submissionId) {
+      // URLSearchParams causes a 'application/x-www-form-urlencoded' body
+      const requestBody = new URLSearchParams();
+      requestBody.append('documentationUrl', '');
+
+      await http.request({
+        method: 'put',
+        url: `covalic_submission/${submissionId}`,
+        data: requestBody,
+        withCredentials: false,
+        responseType: 'json',
+      });
+
+      await this.loadData();
+    },
+
+    async loadData() {
+      this.loading = true;
+
+      try {
+        const submissionsResponse = await http.request({
+          method: 'get',
+          url: 'covalic_submission',
+          params: {
+            limit: 0,
+            offset: 0,
+            sort: 'overallScore',
+            sortdir: -1,
+            phaseId: this.phaseId,
+          },
+          withCredentials: false,
+          responseType: 'json',
+        });
+        submissionsResponse.data.forEach((submission, index) => {
+          submission.rank = index + 1;
+        });
+
+        this.submissions = submissionsResponse.data;
+      } catch (e) {
+        // TODO: Covalic may 401 here if the phase scores are hidden and the user isn't logged in
+      }
+
+      this.loading = false;
     },
   },
-
 };
 </script>
 
