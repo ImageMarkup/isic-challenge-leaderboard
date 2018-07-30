@@ -27,29 +27,29 @@
         </v-alert>
       </td>
 
-      <td>
-        <v-edit-dialog
-          lazy
-          large
-          persistent
-          :return-value.sync="submission.meta.authors"
-          @save="saveSubmissionMeta(submission)"
-        >
-          <template v-if="submission.meta.authors">
-            <i>{{ submission.meta.authors }}</i>
-          </template>
-          <template v-else>
-            <i>Click to set</i>
-          </template>
-          <v-textarea
-            slot="input"
-            v-model="submission.meta.authors"
-            label="Edit Authors"
-            autofocus
-          >
-          </v-textarea>
-        </v-edit-dialog>
-      </td>
+      <!--<td>-->
+        <!--<v-edit-dialog-->
+          <!--lazy-->
+          <!--large-->
+          <!--persistent-->
+          <!--:return-value.sync="submission.meta.authors"-->
+          <!--@save="saveSubmissionMeta(submission)"-->
+        <!--&gt;-->
+          <!--<template v-if="submission.meta.authors">-->
+            <!--<i>{{ submission.meta.authors }}</i>-->
+          <!--</template>-->
+          <!--<template v-else>-->
+            <!--<i>Click to set</i>-->
+          <!--</template>-->
+          <!--<v-textarea-->
+            <!--slot="input"-->
+            <!--v-model="submission.meta.authors"-->
+            <!--label="Edit Authors"-->
+            <!--autofocus-->
+          <!--&gt;-->
+          <!--</v-textarea>-->
+        <!--</v-edit-dialog>-->
+      <!--</td>-->
 
       <td>
         {{ submission.approach }}
@@ -62,6 +62,9 @@
         </template>
         <template v-else>
           <v-icon color="red">close</v-icon>
+        </template>
+        <template v-if="admin && submission.meta.arxivUrl">
+          arXiv URL: <code>{{ submission.meta.arxivUrl }}</code>
         </template>
       </td>
       <td>
@@ -154,12 +157,12 @@ export default {
       return this.submissions.length;
     },
 
-    missingSubmissionsCount() {
+    missingManuscriptCount() {
       return this.submissions.filter(submission => !submission.documentationUrl).length;
     },
 
     uniqueTeamCount() {
-      return new Set(this.submissions.map(submission => submission.organization)).size
+      return new Set(this.submissions.map(submission => submission.organization)).size;
     },
 
     usedExternalCount() {
@@ -176,17 +179,17 @@ export default {
           text: `Team (Submitter User) <${this.uniqueTeamCount} unique teams>`,
           value: 'organization',
         },
-        {
-          text: 'Author Names',
-          value: null,
-        },
+        // {
+        //   text: 'Author Names',
+        //   value: null,
+        // },
         {
           text: 'Approach Name',
           value: 'approach',
           sortable: false,
         },
         {
-          text: `arXiv Abstract <${this.missingSubmissionsCount} missing>`,
+          text: `Manuscript <${this.missingManuscriptCount} missing>`,
           value: 'documentationUrl',
           sortable: false,
         },
@@ -238,7 +241,7 @@ export default {
 
       await http.request({
         method: 'put',
-        url: `covalic_submission/${submission._id}`,
+        url: `covalic_submission/${submission._id}`, // eslint-disable-line no-underscore-dangle
         data: requestBody,
         withCredentials: false,
         responseType: 'json',
@@ -276,7 +279,7 @@ export default {
       this.loading = false;
 
       // Polling causes edit boxes to refresh while typing
-      // window.setTimeout(this.loadData.bind(this), 5000);
+      window.setTimeout(this.loadData.bind(this), 5000);
     },
   },
 };
