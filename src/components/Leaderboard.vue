@@ -150,14 +150,30 @@ export default {
       return this.submissions.filter(submission => !submission.meta.usesExternalData);
     },
 
+    submissionsCount() {
+      return this.submissions.length;
+    },
+
+    missingSubmissionsCount() {
+      return this.submissions.filter(submission => !submission.documentationUrl).length;
+    },
+
+    uniqueTeamCount() {
+      return new Set(this.submissions.map(submission => submission.organization)).size
+    },
+
+    usedExternalCount() {
+      return this.submissions.filter(submission => submission.meta.usesExternalData).length;
+    },
+
     headers() {
       return [
         {
-          text: 'Number (ID)',
+          text: `Number (ID) <${this.submissionsCount} total>`,
           value: 'number',
         },
         {
-          text: 'Team (Submitter User)',
+          text: `Team (Submitter User) <${this.uniqueTeamCount} unique teams>`,
           value: 'organization',
         },
         {
@@ -170,12 +186,12 @@ export default {
           sortable: false,
         },
         {
-          text: 'arXiv Abstract',
+          text: `arXiv Abstract <${this.missingSubmissionsCount} missing>`,
           value: 'documentationUrl',
           sortable: false,
         },
         {
-          text: 'Used External Data',
+          text: `Used External Data <${this.usedExternalCount} used>`,
           value: 'meta.usesExternalData',
         },
         ...(
