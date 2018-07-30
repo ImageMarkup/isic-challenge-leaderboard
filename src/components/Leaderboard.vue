@@ -174,7 +174,7 @@ export default {
           responseType: 'json',
         });
         submissionsResponse.data.forEach((submission, index) => {
-          submission.rank = index + 1;
+          submission.rank = index + 1; // eslint-disable-line no-param-reassign
         });
 
         this.submissions = submissionsResponse.data;
