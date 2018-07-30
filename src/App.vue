@@ -4,7 +4,22 @@
       <v-toolbar>
         <v-toolbar-title>ISIC Challenge Manuscript Review</v-toolbar-title>
         <v-spacer></v-spacer>
-        <span>Current user: {{ user.firstName }} {{ user.lastName }} ({{ user.login }})</span>
+        <template v-if="user">
+          <span>Current user: {{ user.firstName }} {{ user.lastName }} ({{ user.login }})</span>
+        </template>
+        <template v-else>
+          <span>Not logged in!</span>
+        </template>
+        <v-dialog v-model="showLogin" fullscreen persistent>
+          <v-card>
+            <v-card-title class="headline">
+              Not logged in!
+            </v-card-title>
+            <v-card-text>
+              <a href="https://challenge.kitware.com/">Login here</a>, then come back to this page.
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </v-toolbar>
       <v-tabs dark>
         <v-tab>
@@ -51,6 +66,12 @@ export default {
 
   async created() {
     await this.loadUser();
+  },
+
+  computed: {
+    showLogin() {
+      return this.user === null;
+    },
   },
 
   methods: {
