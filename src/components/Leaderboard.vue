@@ -81,7 +81,12 @@
         <v-icon v-if="submission.meta.agreeToSharingPolicy" color="green">check</v-icon>
         <v-icon v-else color="red">close</v-icon>
       </td>
-
+      <td>
+        <v-tooltip bottom>
+          <span slot="activator">{{ submission.overallScore.toPrecision(3) }}</span>
+          <span>{{ submission.overallScore }}</span>
+        </v-tooltip>
+      </td>
       <td>
         <template v-if="submission.meta.documentationReview">
           <template v-if="submission.meta.documentationReview.accepted">
@@ -205,6 +210,10 @@ export default {
             }]
             : []
         ),
+        {
+          text: 'Target Metric Value',
+          value: 'overallScore',
+        },
         {
           text: 'Manuscript Reviewed',
           value: 'meta.documentationReview',
