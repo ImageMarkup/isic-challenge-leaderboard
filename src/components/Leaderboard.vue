@@ -63,9 +63,9 @@
         <template v-else>
           <v-icon color="red">close</v-icon>
         </template>
-        <template v-if="admin && submission.meta.arxivUrl">
+        <div v-if="admin && submission.meta.arxivUrl">
           arXiv URL: <code>{{ submission.meta.arxivUrl }}</code>
-        </template>
+        </div>
       </td>
       <td>
         <template v-if="submission.meta.usesExternalData">
