@@ -13,9 +13,14 @@
         <code>{{ submission._id }}</code>
       </td>
       <td>
-        <a :href="submission.organizationUrl" target="_blank" rel="noopener noreferrer">
+        <template v-if="submission.organizationUrl">
+          <a :href="submission.organizationUrl" target="_blank" rel="noopener noreferrer">
+            {{ submission.organization }}
+          </a>
+        </template>
+        <template v-else>
           {{ submission.organization }}
-        </a>
+        </template>
         <br>
         <i>({{ submission.creatorName }})</i>
         <v-alert
