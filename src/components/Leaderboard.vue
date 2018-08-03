@@ -6,6 +6,15 @@
     hide-actions
     must-sort
   >
+    <template slot="headerCell" slot-scope="{ header }">
+      <div>
+        {{ header.text }}
+        <template v-if="header.countText">
+          <br>
+          &lt;{{ header.countText }}&gt;
+        </template>
+      </div>
+    </template>
     <template slot="items" slot-scope="{ item: submission, expanded }">
       <Submission :submission="submission"></Submission>
     </template>
@@ -68,11 +77,13 @@ export default {
     headers() {
       return [
         {
-          text: `Rank <${this.submissionsCount} total>`,
+          text: 'Rank',
+          countText: `${this.submissionsCount} total`,
           value: 'rank',
         },
         {
-          text: `Team (Submitter User) <${this.uniqueTeamCount} unique teams>`,
+          text: 'Team (Submitter User)',
+          countText: `${this.uniqueTeamCount} unique teams`,
           value: 'organization',
         },
         {
@@ -81,11 +92,14 @@ export default {
           sortable: false,
         },
         {
-          text: this.admin ? `Manuscript <${this.missingManuscriptCount} missing>` : 'Manuscript',
+          text: 'Manuscript',
+          countText: this.admin ? `${this.missingManuscriptCount} missing` : null,
           value: 'documentationUrl',
+          sortable: false,
         },
         {
-          text: `Used External Data <${this.usedExternalCount} used>`,
+          text: 'Used External Data',
+          countText: `${this.usedExternalCount} yes`,
           value: 'meta.usesExternalData',
         },
         {
@@ -140,4 +154,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
+th
+  div
+    text-align center
+    width auto !important
+    display inline-block
 </style>
