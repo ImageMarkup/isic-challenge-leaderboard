@@ -1,94 +1,20 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="submissions"
+    :items="qualifiedSubmissions"
     :loading="loading"
     hide-actions
     must-sort
   >
     <template slot="items" slot-scope="{ item: submission, expanded }">
-      <td>
-        {{ submission.number }}
-        <br>
-        <code>{{ submission._id }}</code>
-      </td>
-      <td>
-        <template v-if="submission.organizationUrl">
-          <a :href="submission.organizationUrl" target="_blank" rel="noopener noreferrer">
-            {{ submission.organization }}
-          </a>
-        </template>
-        <template v-else>
-          {{ submission.organization }}
-        </template>
-        <br>
-        <i>({{ submission.creatorName }})</i>
-        <v-alert
-          v-if="admin"
-          :value="true"
-          color="info"
-        >
-          Team URL: <code>{{ submission.organizationUrl }}</code>
-        </v-alert>
-      </td>
-      <td>
-        {{ submission.approach }}
-      </td>
-      <td>
-        <template v-if="submission.documentationUrl">
-          <a :href="submission.documentationUrl" target="_blank" rel="noopener">
-            <v-icon color="green">assignment</v-icon>
-          </a>
-        </template>
-        <template v-else>
-          <v-icon color="red">close</v-icon>
-        </template>
-        <div v-if="admin && submission.meta.arxivUrl">
-          arXiv URL: <code>{{ submission.meta.arxivUrl }}</code>
-        </div>
-      </td>
-      <td>
-        <template v-if="submission.meta.usesExternalData">
-          <v-icon color="orange">public</v-icon>
-          Yes
-        </template>
-        <template v-else>
-          <v-icon color="blue">vpn_lock</v-icon>
-          No
-        </template>
-      </td>
-      <td v-if="admin">
-        <v-icon v-if="submission.meta.agreeToSharingPolicy" color="green">check</v-icon>
-        <v-icon v-else color="red">close</v-icon>
-      </td>
-      <td>
-        <v-tooltip bottom>
-          <span slot="activator">{{ submission.overallScore.toPrecision(3) }}</span>
-          <span>{{ submission.overallScore }}</span>
-        </v-tooltip>
-      </td>
-      <td>
-        <template v-if="submission.meta.documentationReview">
-          <template v-if="submission.meta.documentationReview.accepted">
-            <v-icon color="green">check</v-icon>
-            Accepted <i>({{ submission.meta.documentationReview.userLogin }})</i>
-          </template>
-          <template v-else>
-            <v-icon color="red">close</v-icon>
-            Rejected <i>({{ submission.meta.documentationReview.userLogin }})</i>
-          </template>
-        </template>
-      </td>
-    </template>
-    <template slot="footer">
-      <input type="checkbox" id="leaderboard-admin" v-model="admin">
-      <label for="leaderboard-admin">Admin mode</label>
+      <Submission :submission="submission"></Submission>
     </template>
   </v-data-table>
 </template>
 
 <script>
 import http from '../http';
+import Submission from './Submission.vue';
 
 export default {
   name: 'Leaderboard',
@@ -96,6 +22,10 @@ export default {
   props: {
     phaseId: String,
     user: Object,
+  },
+
+  components: {
+    Submission,
   },
 
   data() {
@@ -111,31 +41,35 @@ export default {
   },
 
   computed: {
-    submissionsWithoutExternalData() {
-      return this.submissions.filter(submission => !submission.meta.usesExternalData);
+    qualifiedSubmissions() {
+      return this.submissions.filter(submission =>
+        submission.documentationUrl &&
+        submission.meta.documentationReview &&
+        submission.meta.documentationReview.accepted);
     },
 
     submissionsCount() {
-      return this.submissions.length;
+      return this.qualifiedSubmissions.length;
     },
 
     missingManuscriptCount() {
-      return this.submissions.filter(submission => !submission.documentationUrl).length;
+      return this.qualifiedSubmissions.filter(submission => !submission.documentationUrl).length;
     },
 
     uniqueTeamCount() {
-      return new Set(this.submissions.map(submission => submission.organization)).size;
+      return new Set(this.qualifiedSubmissions.map(submission => submission.organization)).size;
     },
 
     usedExternalCount() {
-      return this.submissions.filter(submission => submission.meta.usesExternalData).length;
+      return this.qualifiedSubmissions.filter(submission =>
+        submission.meta.usesExternalData).length;
     },
 
     headers() {
       return [
         {
-          text: `Number (ID) <${this.submissionsCount} total>`,
-          value: 'number',
+          text: `Rank <${this.submissionsCount} total>`,
+          value: 'rank',
         },
         {
           text: `Team (Submitter User) <${this.uniqueTeamCount} unique teams>`,
@@ -147,51 +81,31 @@ export default {
           sortable: false,
         },
         {
-          text: `Manuscript <${this.missingManuscriptCount} missing>`,
+          text: this.admin ? `Manuscript <${this.missingManuscriptCount} missing>` : 'Manuscript',
           value: 'documentationUrl',
         },
         {
           text: `Used External Data <${this.usedExternalCount} used>`,
           value: 'meta.usesExternalData',
         },
+        {
+          text: 'Primary Metric Value',
+          value: 'overallScore',
+        },
         ...(
           this.admin ?
             [{
-              text: 'Agreed To Sharing Policy',
-              value: 'meta.agreeToSharingPolicy',
+              text: 'Manuscript Reviewed',
+              value: 'meta.documentationReview',
+              sortable: false,
             }]
             : []
         ),
-        {
-          text: 'Target Metric Value',
-          value: 'overallScore',
-        },
-        {
-          text: 'Manuscript Reviewed',
-          value: 'meta.documentationReview',
-          sortable: false,
-        },
       ];
     },
   },
 
   methods: {
-    async saveSubmissionMeta(submission) {
-      // URLSearchParams causes a 'application/x-www-form-urlencoded' body
-      const requestBody = new URLSearchParams();
-      requestBody.append('meta', JSON.stringify(submission.meta));
-
-      await http.request({
-        method: 'put',
-        url: `covalic_submission/${submission._id}`, // eslint-disable-line no-underscore-dangle
-        data: requestBody,
-        withCredentials: false,
-        responseType: 'json',
-      });
-
-      await this.loadData();
-    },
-
     async loadData() {
       this.loading = true;
 
@@ -202,15 +116,15 @@ export default {
           params: {
             limit: 0,
             offset: 0,
-            sort: 'organization',
-            sortdir: 1,
+            sort: 'overallScore',
+            sortdir: -1,
             phaseId: this.phaseId,
           },
           withCredentials: false,
           responseType: 'json',
         });
         submissionsResponse.data.forEach((submission, index) => {
-          submission.number = index + 1; // eslint-disable-line no-param-reassign
+          submission.rank = index + 1; // eslint-disable-line no-param-reassign
         });
 
         this.submissions = submissionsResponse.data;
