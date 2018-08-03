@@ -31,31 +31,6 @@
           Team URL: <code>{{ submission.organizationUrl }}</code>
         </v-alert>
       </td>
-
-      <!--<td>-->
-        <!--<v-edit-dialog-->
-          <!--lazy-->
-          <!--large-->
-          <!--persistent-->
-          <!--:return-value.sync="submission.meta.authors"-->
-          <!--@save="saveSubmissionMeta(submission)"-->
-        <!--&gt;-->
-          <!--<template v-if="submission.meta.authors">-->
-            <!--<i>{{ submission.meta.authors }}</i>-->
-          <!--</template>-->
-          <!--<template v-else>-->
-            <!--<i>Click to set</i>-->
-          <!--</template>-->
-          <!--<v-textarea-->
-            <!--slot="input"-->
-            <!--v-model="submission.meta.authors"-->
-            <!--label="Edit Authors"-->
-            <!--autofocus-->
-          <!--&gt;-->
-          <!--</v-textarea>-->
-        <!--</v-edit-dialog>-->
-      <!--</td>-->
-
       <td>
         {{ submission.approach }}
       </td>
@@ -102,29 +77,6 @@
             <v-icon color="red">close</v-icon>
             Rejected <i>({{ submission.meta.documentationReview.userLogin }})</i>
           </template>
-          <v-btn
-            @click.stop="reviewDocumentation(submission, null)"
-            small
-            color="orange"
-          >
-            Reset
-          </v-btn>
-        </template>
-        <template v-else>
-          <v-btn
-            @click.stop="reviewDocumentation(submission, true)"
-            small
-            color="green"
-          >
-            Accept
-          </v-btn>
-          <v-btn
-            @click.stop="reviewDocumentation(submission, false)"
-            small
-            color="red"
-          >
-            Reject
-          </v-btn>
         </template>
       </td>
     </template>
@@ -189,10 +141,6 @@ export default {
           text: `Team (Submitter User) <${this.uniqueTeamCount} unique teams>`,
           value: 'organization',
         },
-        // {
-        //   text: 'Author Names',
-        //   value: null,
-        // },
         {
           text: 'Approach Name',
           value: 'approach',
@@ -201,7 +149,6 @@ export default {
         {
           text: `Manuscript <${this.missingManuscriptCount} missing>`,
           value: 'documentationUrl',
-          sortable: false,
         },
         {
           text: `Used External Data <${this.usedExternalCount} used>`,
@@ -229,25 +176,6 @@ export default {
   },
 
   methods: {
-    async reviewDocumentation(submission, accepted) {
-      if (accepted === true || accepted === false) {
-        this.$set(
-          submission.meta,
-          'documentationReview',
-          {
-            accepted,
-            time: new Date().toISOString(),
-            userId: this.user._id, // eslint-disable-line no-underscore-dangle
-            userLogin: this.user.login,
-          },
-        );
-      } else {
-        this.$delete(submission.meta, 'documentationReview');
-      }
-
-      await this.saveSubmissionMeta(submission);
-    },
-
     async saveSubmissionMeta(submission) {
       // URLSearchParams causes a 'application/x-www-form-urlencoded' body
       const requestBody = new URLSearchParams();
@@ -291,9 +219,6 @@ export default {
       }
 
       this.loading = false;
-
-      // Polling causes edit boxes to refresh while typing
-      window.setTimeout(this.loadData.bind(this), 5000);
     },
   },
 };
