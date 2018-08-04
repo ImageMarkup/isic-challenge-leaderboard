@@ -56,3 +56,8 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="stylus">
+  td
+    word-break break-word
+</style>
