@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import http from './http';
+import http from '@/http';
+import settings from '@/settings';
 
 Vue.use(Vuex);
 
@@ -9,19 +10,19 @@ export default new Vuex.Store({
   state: {
     tasks: {
       1: {
-        id: '5b1c193356357d41064da2ec',
+        id: settings.taskIds[1],
         name: 'Lesion Boundary Segmentation',
         phase: null,
         submissions: [],
       },
       2: {
-        id: '5b1c1a9f56357d41064da2f6',
+        id: settings.taskIds[2],
         name: 'Lesion Attribute Detection',
         phase: null,
         submissions: [],
       },
       3: {
-        id: '5b1c1aa756357d41064da300',
+        id: settings.taskIds[3],
         name: 'Lesion Diagnosis',
         phase: null,
         submissions: [],

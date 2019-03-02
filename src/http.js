@@ -1,10 +1,10 @@
 import axios from 'axios';
 import * as Cookies from 'js-cookie';
 
-const covalicApiBase = 'https://challenge.kitware.com/api/v1/';
+import settings from '@/settings';
 
 const http = axios.create({
-  baseURL: covalicApiBase,
+  baseURL: settings.covalicApiBase,
   withCredentials: false,
   responseType: 'json',
 });

@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <v-toolbar>
-        <v-toolbar-title>ISIC Challenge 2018 Leaderboards</v-toolbar-title>
+        <v-toolbar-title>{{ title }} Leaderboards</v-toolbar-title>
         <v-spacer/>
       </v-toolbar>
       <v-tabs dark>
@@ -22,13 +22,20 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 
-import Leaderboard from './components/Leaderboard.vue';
+import settings from '@/settings';
+import Leaderboard from '@/components/Leaderboard.vue';
 
 export default {
   name: 'App',
 
   components: {
     Leaderboard,
+  },
+
+  data() {
+    return {
+      title: settings.title,
+    };
   },
 
   computed: {
