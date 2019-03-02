@@ -3,6 +3,7 @@
     :headers="headers"
     :items="qualifiedSubmissions"
     :loading="loading"
+    item-key="_id"
     hide-actions
     must-sort
   >
@@ -17,46 +18,55 @@
         </template>
       </div>
     </template>
-    <template slot="items" slot-scope="{ item: submission, expanded }">
-      <Submission :submission="submission"></Submission>
+    <template
+      slot="items"
+      slot-scope="{ item: submission, expanded }"
+    >
+      <Submission :submission="submission" />
     </template>
   </v-data-table>
 </template>
 
 <script>
-import http from '../http';
+import { mapState, mapActions } from 'vuex';
 import Submission from './Submission.vue';
 
 export default {
   name: 'Leaderboard',
 
-  props: {
-    phaseId: String,
-    user: Object,
-  },
-
   components: {
     Submission,
+  },
+
+  props: {
+    taskNum: {
+      type: String,
+      required: true,
+    },
   },
 
   data() {
     return {
       admin: false,
-      submissions: [],
-      loading: true,
     };
   },
 
-  async created() {
-    await this.loadData();
-  },
-
   computed: {
+    ...mapState({
+      submissions(state) {
+        return state.tasks[this.taskNum].submissions;
+      },
+    }),
+
+    loading() {
+      return !this.submissions.length;
+    },
+
     qualifiedSubmissions() {
-      return this.submissions.filter(submission =>
-        submission.documentationUrl &&
-        submission.meta.documentationReview &&
-        submission.meta.documentationReview.accepted);
+      return this.submissions.filter(submission => (
+        submission.documentationUrl
+        && submission.meta.documentationReview
+        && submission.meta.documentationReview.accepted));
     },
 
     submissionsCount() {
@@ -72,8 +82,9 @@ export default {
     },
 
     usedExternalCount() {
-      return this.qualifiedSubmissions.filter(submission =>
-        submission.meta.usesExternalData).length;
+      return this.qualifiedSubmissions.filter(
+        submission => submission.meta.usesExternalData,
+      ).length;
     },
 
     headers() {
@@ -109,46 +120,13 @@ export default {
           value: 'overallScore',
         },
         ...(
-          this.admin ?
-            [{
-              text: 'Manuscript Reviewed',
-              value: 'meta.documentationReview',
-              sortable: false,
-            }]
-            : []
+          this.admin ? [{
+            text: 'Manuscript Reviewed',
+            value: 'meta.documentationReview',
+            sortable: false,
+          }] : []
         ),
       ];
-    },
-  },
-
-  methods: {
-    async loadData() {
-      this.loading = true;
-
-      try {
-        const submissionsResponse = await http.request({
-          method: 'get',
-          url: 'covalic_submission',
-          params: {
-            limit: 0,
-            offset: 0,
-            sort: 'overallScore',
-            sortdir: -1,
-            phaseId: this.phaseId,
-          },
-          withCredentials: false,
-          responseType: 'json',
-        });
-        submissionsResponse.data.forEach((submission, index) => {
-          submission.rank = index + 1; // eslint-disable-line no-param-reassign
-        });
-
-        this.submissions = submissionsResponse.data;
-      } catch (e) {
-        // TODO: Covalic may 401 here if the phase scores are hidden and the user isn't logged in
-      }
-
-      this.loading = false;
     },
   },
 };

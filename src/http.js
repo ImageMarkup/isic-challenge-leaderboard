@@ -5,6 +5,8 @@ const covalicApiBase = 'https://challenge.kitware.com/api/v1/';
 
 const http = axios.create({
   baseURL: covalicApiBase,
+  withCredentials: false,
+  responseType: 'json',
 });
 
 const token = window.location.hash.replace(/^#/, '')

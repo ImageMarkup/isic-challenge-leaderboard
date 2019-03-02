@@ -5,7 +5,10 @@
     </td>
     <td>
       <template v-if="submission.organizationUrl">
-        <a :href="submission.organizationUrl" target="_blank" rel="noopener noreferrer">
+        <a
+          :href="submission.organizationUrl"
+          target="_blank"
+          rel="noopener noreferrer">
           {{ submission.organization }}
         </a>
       </template>
@@ -20,7 +23,10 @@
     </td>
     <td>
       <template v-if="submission.documentationUrl">
-        <a :href="submission.documentationUrl" target="_blank" rel="noopener">
+        <a
+          :href="submission.documentationUrl"
+          target="_blank"
+          rel="noopener">
           <v-icon color="green">assignment</v-icon>
         </a>
       </template>
@@ -52,7 +58,10 @@ export default {
   name: 'Submission',
 
   props: {
-    submission: Object,
+    submission: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
