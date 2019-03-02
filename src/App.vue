@@ -3,7 +3,7 @@
     <v-content>
       <v-toolbar>
         <v-toolbar-title>ISIC Challenge 2018 Leaderboards</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer/>
       </v-toolbar>
       <v-tabs dark>
         <v-tab>

@@ -6,7 +6,9 @@
     hide-actions
     must-sort
   >
-    <template slot="headerCell" slot-scope="{ header }">
+    <template
+      slot="headerCell"
+      slot-scope="{ header }">
       <div>
         {{ header.text }}
         <template v-if="header.countText">

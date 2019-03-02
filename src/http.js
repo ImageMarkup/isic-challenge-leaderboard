@@ -7,10 +7,9 @@ const http = axios.create({
   baseURL: covalicApiBase,
 });
 
-const token =
-  window.location.hash.replace(/^#/, '') ||
-  Cookies.get('girderToken') ||
-  null;
+const token = window.location.hash.replace(/^#/, '')
+  || Cookies.get('girderToken')
+  || null;
 if (token) {
   http.defaults.headers.common['Girder-Token'] = token;
 }
