@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="qualifiedSubmissions"
+    :items="submissions"
     :loading="loading"
     item-key="_id"
     hide-actions
@@ -62,27 +62,20 @@ export default {
       return !this.submissions.length;
     },
 
-    qualifiedSubmissions() {
-      return this.submissions.filter(submission => (
-        submission.documentationUrl
-        && submission.meta.documentationReview
-        && submission.meta.documentationReview.accepted));
-    },
-
     submissionsCount() {
-      return this.qualifiedSubmissions.length;
+      return this.submissions.length;
     },
 
     missingManuscriptCount() {
-      return this.qualifiedSubmissions.filter(submission => !submission.documentationUrl).length;
+      return this.submissions.filter(submission => !submission.documentationUrl).length;
     },
 
     uniqueTeamCount() {
-      return new Set(this.qualifiedSubmissions.map(submission => submission.organization)).size;
+      return new Set(this.submissions.map(submission => submission.organization)).size;
     },
 
     usedExternalCount() {
-      return this.qualifiedSubmissions.filter(
+      return this.submissions.filter(
         submission => submission.meta.usesExternalData,
       ).length;
     },
