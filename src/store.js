@@ -14,18 +14,84 @@ export default new Vuex.Store({
         name: 'Lesion Boundary Segmentation',
         phase: null,
         submissions: [],
+        metricGroups: [
+          {
+            id: 'Average',
+            name: 'Mean',
+            primary: true,
+          },
+        ],
+        metricTypes: [
+          {
+            id: 'threshold_jaccard',
+            name: 'Threshold Jaccard Index',
+            primary: true,
+          },
+          {
+            id: 'jaccard',
+            name: 'Jaccard Index',
+          },
+          {
+            id: 'dice',
+            name: 'Dice Coefficient',
+          },
+          {
+            id: 'sensitivity',
+            name: 'Sensitivity',
+          },
+          {
+            id: 'specificity',
+            name: 'Specificity',
+          },
+          {
+            id: 'accuracy',
+            name: 'Accuracy',
+          },
+        ],
       },
       2: {
         id: settings.taskIds[2],
         name: 'Lesion Attribute Detection',
         phase: null,
         submissions: [],
+        metricGroups: [
+          {
+            id: 'aggregate',
+            name: 'Aggregate',
+            primary: true,
+          },
+        ],
+        metricTypes: [
+          {
+            id: 'jaccard',
+            name: 'Jaccard Index',
+            primary: true,
+          },
+          {
+            id: 'dice',
+            name: 'Dice Coefficient',
+          },
+        ],
       },
       3: {
         id: settings.taskIds[3],
         name: 'Lesion Diagnosis',
         phase: null,
         submissions: [],
+        metricGroups: [
+          {
+            id: 'aggregate',
+            name: 'Aggregate',
+            primary: true,
+          },
+        ],
+        metricTypes: [
+          {
+            id: 'balanced_accuracy',
+            name: 'Balanced Multiclass Accuracy',
+            primary: true,
+          },
+        ],
       },
     },
   },
@@ -35,6 +101,11 @@ export default new Vuex.Store({
     },
     setPhase(state, { taskNum, phase }) {
       state.tasks[taskNum].phase = phase;
+    },
+    setScores(state, { taskNum, submissionId, scores }) {
+      const submission = state.tasks[taskNum].submissions
+        .find(aSubmission => aSubmission._id === submissionId);
+      Vue.set(submission, 'scores', scores);
     },
   },
   actions: {
@@ -83,6 +154,59 @@ export default new Vuex.Store({
         const phase = phaseResponse.data;
 
         commit('setPhase', { taskNum, phase });
+      } catch (e) {
+        // TODO: log error
+      }
+    },
+
+    async loadSubmissionDetail({ commit }, { taskNum, submissionId }) {
+      try {
+        const submissionResponse = await http.request({
+          method: 'get',
+          url: `covalic_submission/${submissionId}`,
+        });
+
+        const submission = submissionResponse.data;
+        /* 'submission.score' looks like:
+            [
+              // scoreGroup[0]
+              {
+                dataset: "Average",
+                metrics: [
+                  {name: "threshold_jaccard", value: 0.567}
+                ]
+              },
+              // scoreGroup[1]
+              {
+                dataset: "ISIC_0000001",
+                metrics: [
+                  {name: "threshold_jaccard", value: 0.765}
+                ]
+              },
+              ...
+            ]
+
+           'scores' is transformed to:
+            {
+              "Average": {
+                "threshold_jaccard": 0.567
+              },
+              "ISIC_0000001": {
+                "threshold_jaccard": 0.765
+              },
+            }
+         */
+        const scores = submission.score
+          .reduce((allScoreGroups, scoreGroup) => ({
+            ...allScoreGroups,
+            [scoreGroup.dataset]: scoreGroup.metrics
+              .reduce((allScores, score) => ({
+                ...allScores,
+                [score.name]: score.value,
+              }), {}),
+          }), {});
+
+        commit('setScores', { taskNum, submissionId, scores });
       } catch (e) {
         // TODO: log error
       }

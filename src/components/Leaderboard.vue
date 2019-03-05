@@ -6,23 +6,36 @@
     item-key="_id"
     hide-actions
     must-sort
+    expand
   >
     <template
       slot="headerCell"
       slot-scope="{ header }">
       <div>
         {{ header.text }}
-        <template v-if="header.countText">
+        <template v-if="header.subText">
           <br>
-          &lt;{{ header.countText }}&gt;
+          &lt;{{ header.subText }}&gt;
         </template>
       </div>
     </template>
     <template
       slot="items"
-      slot-scope="{ item: submission, expanded }"
+      slot-scope="props"
     >
-      <Submission :submission="submission" />
+      <Submission
+        :submission="props.item"
+        :expanded="props.expanded || false"
+        @click.native="toggleExpand(props)"
+      />
+    </template>
+    <template
+      slot="expand"
+      slot-scope="{ item: submission }">
+      <SubmissionDetail
+        :task-num="taskNum"
+        :submission="submission"
+      />
     </template>
   </v-data-table>
 </template>
@@ -30,12 +43,14 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import Submission from './Submission.vue';
+import SubmissionDetail from './SubmissionDetail.vue';
 
 export default {
   name: 'Leaderboard',
 
   components: {
     Submission,
+    SubmissionDetail,
   },
 
   props: {
@@ -55,6 +70,11 @@ export default {
     ...mapState({
       submissions(state) {
         return state.tasks[this.taskNum].submissions;
+      },
+      primaryMetricName(state) {
+        return state.tasks[this.taskNum].metricTypes
+          .find(metricGroup => metricGroup.primary)
+          .name;
       },
     }),
 
@@ -84,12 +104,12 @@ export default {
       return [
         {
           text: 'Rank',
-          countText: `${this.submissionsCount} total`,
+          subText: `${this.submissionsCount} total`,
           value: 'rank',
         },
         {
           text: 'Team (Submitter User)',
-          countText: `${this.uniqueTeamCount} unique teams`,
+          subText: `${this.uniqueTeamCount} unique teams`,
           value: 'organization',
         },
         {
@@ -99,17 +119,18 @@ export default {
         },
         {
           text: 'Manuscript',
-          countText: this.admin ? `${this.missingManuscriptCount} missing` : null,
+          subText: this.admin ? `${this.missingManuscriptCount} missing` : null,
           value: 'documentationUrl',
           sortable: false,
         },
         {
           text: 'Used External Data',
-          countText: `${this.usedExternalCount} yes`,
+          subText: `${this.usedExternalCount} yes`,
           value: 'meta.usesExternalData',
         },
         {
           text: 'Primary Metric Value',
+          subText: this.primaryMetricName,
           value: 'overallScore',
         },
         ...(
@@ -120,6 +141,19 @@ export default {
           }] : []
         ),
       ];
+    },
+  },
+  methods: {
+    ...mapActions([
+      'loadSubmissionDetail',
+    ]),
+    toggleExpand(props) {
+      // eslint-disable-next-line no-param-reassign
+      props.expanded = !props.expanded;
+      if (props.expanded) {
+        const submission = props.item;
+        this.loadSubmissionDetail({ taskNum: this.taskNum, submissionId: submission._id });
+      }
     },
   },
 };

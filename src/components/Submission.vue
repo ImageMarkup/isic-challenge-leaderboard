@@ -49,6 +49,12 @@
         <span slot="activator">{{ submission.overallScore.toPrecision(3) }}</span>
         <span>{{ submission.overallScore }}</span>
       </v-tooltip>
+      <template v-if="expanded">
+        <v-icon>expand_less</v-icon>
+      </template>
+      <template v-else>
+        <v-icon>expand_more</v-icon>
+      </template>
     </td>
   </tr>
 </template>
@@ -60,6 +66,10 @@ export default {
   props: {
     submission: {
       type: Object,
+      required: true,
+    },
+    expanded: {
+      type: Boolean,
       required: true,
     },
   },
