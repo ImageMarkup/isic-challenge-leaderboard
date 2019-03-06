@@ -84,12 +84,68 @@ export default new Vuex.Store({
             name: 'Aggregate',
             primary: true,
           },
+          {
+            id: 'MEL',
+            name: 'Melanoma',
+          },
+          {
+            id: 'NV',
+            name: 'Melanocytic nevus',
+          },
+          {
+            id: 'BCC',
+            name: 'Basal cell carcinoma',
+          },
+          {
+            id: 'AKIEC',
+            name: 'Actinic keratosis / Bowen’s disease (intraepithelial carcinoma)',
+          },
+          {
+            id: 'BKL',
+            name: 'Benign keratosis (solar lentigo / seborrheic keratosis / lichen planus-like keratosis)',
+          },
+          {
+            id: 'DF',
+            name: 'Dermatofibroma',
+          },
+          {
+            id: 'VASC',
+            name: 'Vascular lesion',
+          },
         ],
         metricTypes: [
           {
             id: 'balanced_accuracy',
             name: 'Balanced Multiclass Accuracy',
             primary: true,
+          },
+          {
+            id: 'accuracy',
+            name: 'Accuracy',
+          },
+          {
+            id: 'sensitivity',
+            name: 'Sensitivity',
+          },
+          {
+            id: 'specificity',
+            name: 'Specificity',
+          },
+          {
+            id: 'f1_score',
+            name: 'F1 Score',
+          },
+          {
+            id: 'ppv',
+            name: 'PPV',
+          },
+          {
+            id: 'npv',
+            name: 'NPV',
+          },
+          {
+            id: 'area_under_roc',
+            name: 'Area Under ROC',
           },
         ],
       },
