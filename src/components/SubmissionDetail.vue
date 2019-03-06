@@ -31,14 +31,16 @@
         v-for="metricType in metricTypes"
         :key="metricType.id"
       >
-        <v-tooltip bottom>
-          <span slot="activator">
-            {{ scoreValue(metricGroup.id, metricType.id).toPrecision(3) }}
-          </span>
-          <span>
-            {{ scoreValue(metricGroup.id, metricType.id) }}
-          </span>
-        </v-tooltip>
+        <template v-if="scoreValue(metricGroup.id, metricType.id) !== undefined">
+          <v-tooltip bottom>
+            <span slot="activator">
+              {{ scoreValue(metricGroup.id, metricType.id).toPrecision(3) }}
+            </span>
+            <span>
+              {{ scoreValue(metricGroup.id, metricType.id) }}
+            </span>
+          </v-tooltip>
+        </template>
       </td>
     </template>
   </v-data-table>
@@ -98,7 +100,7 @@ export default {
   },
   methods: {
     scoreValue(metricGroupId, metricTypeId) {
-      return this.submission.scores[metricGroupId][metricTypeId];
+      return this.submission.scores[metricGroupId] && this.submission.scores[metricGroupId][metricTypeId];
     },
   },
 };
