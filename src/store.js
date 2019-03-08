@@ -144,8 +144,12 @@ export default new Vuex.Store({
             name: 'NPV',
           },
           {
-            id: 'area_under_roc',
+            id: 'auc',
             name: 'Area Under ROC',
+          },
+          {
+            id: 'auc_sens_80',
+            name: 'Area Under ROC, Sensitivity > 80%',
           },
         ],
       },
