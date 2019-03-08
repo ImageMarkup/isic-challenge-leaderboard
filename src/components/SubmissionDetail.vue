@@ -15,7 +15,6 @@
         <th
           v-for="header in headers"
           :key="header.value"
-          :class="{bold: header.primary}"
           class="column text-xs-left"
         >
           {{ header.text }}
@@ -30,6 +29,7 @@
       <td
         v-for="metricType in metricTypes"
         :key="metricType.id"
+        :class="{bold: metricGroup.primary && metricType.primary}"
       >
         <template v-if="scoreValue(metricGroup.id, metricType.id) !== undefined">
           <v-tooltip bottom>
@@ -100,18 +100,17 @@ export default {
   },
   methods: {
     scoreValue(metricGroupId, metricTypeId) {
-      return this.submission.scores[metricGroupId] && this.submission.scores[metricGroupId][metricTypeId];
+      return this.submission.scores[metricGroupId]
+        && this.submission.scores[metricGroupId][metricTypeId];
     },
   },
 };
 </script>
 
 <style scoped lang="stylus">
-  th.bold
+  .bold
     color #fff !important
     font-weight bold
-  td
-    word-break break-word
   tr, th, td
     height 35px !important
   th, td
