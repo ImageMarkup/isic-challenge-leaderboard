@@ -32,7 +32,8 @@
     <template
       slot="expand"
       slot-scope="{ item: submission }">
-      <SubmissionDetail
+      <component
+        :is="detailComponent"
         :task-num="taskNum"
         :submission="submission"
       />
@@ -44,13 +45,13 @@
 import { mapState, mapActions } from 'vuex';
 import Submission from './Submission.vue';
 import SubmissionDetail from './SubmissionDetail.vue';
+import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
 
 export default {
   name: 'Leaderboard',
 
   components: {
     Submission,
-    SubmissionDetail,
   },
 
   props: {
@@ -72,9 +73,10 @@ export default {
         return state.tasks[this.taskNum].submissions;
       },
       primaryMetricName(state) {
-        return state.tasks[this.taskNum].metricTypes
-          .find(metricGroup => metricGroup.primary)
-          .name;
+        return state.tasks[this.taskNum].primaryMetricName
+          || state.tasks[this.taskNum].metricTypes
+            .find(metricGroup => metricGroup.primary)
+            .name;
       },
     }),
 
@@ -141,6 +143,13 @@ export default {
           }] : []
         ),
       ];
+    },
+    detailComponent() {
+      return {
+        1: SubmissionDetail,
+        2: SubmissionDetail,
+        3: Task3SubmissionDetail,
+      }[this.taskNum];
     },
   },
   methods: {

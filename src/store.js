@@ -77,81 +77,8 @@ export default new Vuex.Store({
         id: settings.taskIds[3],
         name: 'Lesion Diagnosis',
         phase: null,
+        primaryMetricName: 'Balanced Multiclass Accuracy',
         submissions: [],
-        metricGroups: [
-          {
-            id: 'aggregate',
-            name: 'Aggregate',
-            primary: true,
-          },
-          {
-            id: 'MEL',
-            name: 'Melanoma',
-          },
-          {
-            id: 'NV',
-            name: 'Melanocytic nevus',
-          },
-          {
-            id: 'BCC',
-            name: 'Basal cell carcinoma',
-          },
-          {
-            id: 'AKIEC',
-            name: 'Actinic keratosis / Bowen’s disease (intraepithelial carcinoma)',
-          },
-          {
-            id: 'BKL',
-            name: 'Benign keratosis (solar lentigo / seborrheic keratosis / lichen planus-like keratosis)',
-          },
-          {
-            id: 'DF',
-            name: 'Dermatofibroma',
-          },
-          {
-            id: 'VASC',
-            name: 'Vascular lesion',
-          },
-        ],
-        metricTypes: [
-          {
-            id: 'balanced_accuracy',
-            name: 'Balanced Multiclass Accuracy',
-            primary: true,
-          },
-          {
-            id: 'accuracy',
-            name: 'Accuracy',
-          },
-          {
-            id: 'sensitivity',
-            name: 'Sensitivity',
-          },
-          {
-            id: 'specificity',
-            name: 'Specificity',
-          },
-          {
-            id: 'f1_score',
-            name: 'F1 Score',
-          },
-          {
-            id: 'ppv',
-            name: 'PPV',
-          },
-          {
-            id: 'npv',
-            name: 'NPV',
-          },
-          {
-            id: 'auc',
-            name: 'Area Under ROC',
-          },
-          {
-            id: 'auc_sens_80',
-            name: 'Area Under ROC, Sensitivity > 80%',
-          },
-        ],
       },
     },
   },
