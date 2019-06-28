@@ -56,8 +56,8 @@ export default new Vuex.Store({
         submissions: [],
         metricGroups: [
           {
-            id: 'aggregate',
-            name: 'Aggregate',
+            id: 'Average',
+            name: 'Macro Average',
             primary: true,
           },
         ],
