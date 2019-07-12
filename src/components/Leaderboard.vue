@@ -3,7 +3,7 @@
     :headers="headers"
     :items="submissions"
     :loading="loading"
-    item-key="_id"
+    item-key="submission_id"
     hide-actions
     must-sort
     expand
@@ -89,16 +89,16 @@ export default {
     },
 
     missingManuscriptCount() {
-      return this.submissions.filter(submission => !submission.documentationUrl).length;
+      return this.submissions.filter(submission => !submission.approach_manuscript_url).length;
     },
 
     uniqueTeamCount() {
-      return new Set(this.submissions.map(submission => submission.organization)).size;
+      return new Set(this.submissions.map(submission => submission.team_name)).size;
     },
 
     usedExternalCount() {
       return this.submissions.filter(
-        submission => submission.meta.usesExternalData,
+        submission => submission.approach_uses_external_data,
       ).length;
     },
 
@@ -112,36 +112,36 @@ export default {
         {
           text: 'Team (Submitter User)',
           subText: `${this.uniqueTeamCount} unique teams`,
-          value: 'organization',
+          value: 'team_name',
         },
         {
           text: 'Approach Name',
-          value: 'approach',
+          value: 'approach_name ',
           sortable: false,
         },
         {
           text: 'Manuscript',
           subText: this.admin ? `${this.missingManuscriptCount} missing` : null,
-          value: 'documentationUrl',
+          value: 'approach_manuscript_url',
           sortable: false,
         },
         {
           text: 'Used External Data',
           subText: `${this.usedExternalCount} yes`,
-          value: 'meta.usesExternalData',
+          value: 'approach_uses_external_data',
         },
         {
           text: 'Primary Metric Value',
           subText: this.primaryMetricName,
-          value: 'overallScore',
+          value: 'overall_score',
         },
-        ...(
-          this.admin ? [{
-            text: 'Manuscript Reviewed',
-            value: 'meta.documentationReview',
-            sortable: false,
-          }] : []
-        ),
+        // ...(
+        //   this.admin ? [{
+        //     text: 'Manuscript Reviewed',
+        //     value: 'meta.documentationReview',
+        //     sortable: false,
+        //   }] : []
+        // ),
       ];
     },
     detailComponent() {
@@ -161,7 +161,7 @@ export default {
       props.expanded = !props.expanded;
       if (props.expanded) {
         const submission = props.item;
-        this.loadSubmissionDetail({ taskNum: this.taskNum, submissionId: submission._id });
+        this.loadSubmissionDetail({ taskNum: this.taskNum, submissionId: submission.submission_id });
       }
     },
   },

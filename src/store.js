@@ -12,7 +12,6 @@ export default new Vuex.Store({
       1: {
         id: settings.taskIds[1],
         name: 'Lesion Boundary Segmentation',
-        phase: null,
         submissions: [],
         metricGroups: [
           {
@@ -52,7 +51,6 @@ export default new Vuex.Store({
       2: {
         id: settings.taskIds[2],
         name: 'Lesion Attribute Detection',
-        phase: null,
         submissions: [],
         metricGroups: [
           {
@@ -76,7 +74,6 @@ export default new Vuex.Store({
       3: {
         id: settings.taskIds[3],
         name: 'Lesion Diagnosis',
-        phase: null,
         primaryMetricName: 'Balanced Multiclass Accuracy',
         submissions: [],
       },
@@ -86,12 +83,9 @@ export default new Vuex.Store({
     setSubmissions(state, { taskNum, submissions }) {
       state.tasks[taskNum].submissions = submissions;
     },
-    setPhase(state, { taskNum, phase }) {
-      state.tasks[taskNum].phase = phase;
-    },
     setScores(state, { taskNum, submissionId, scores }) {
       const submission = state.tasks[taskNum].submissions
-        .find(aSubmission => aSubmission._id === submissionId);
+        .find(aSubmission => aSubmission.submission_id === submissionId);
       Vue.set(submission, 'scores', scores);
     },
   },
@@ -100,7 +94,6 @@ export default new Vuex.Store({
       const taskNums = Object.keys(state.tasks);
       const loadResults = [].concat(
         taskNums.map(taskNum => dispatch('loadSubmissions', { taskNum })),
-        taskNums.map(taskNum => dispatch('loadPhase', { taskNum })),
       );
       await Promise.all(loadResults);
     },
@@ -109,18 +102,15 @@ export default new Vuex.Store({
       try {
         const submissionsResponse = await http.request({
           method: 'get',
-          url: 'covalic_submission',
+          url: `leaderboard/${state.tasks[taskNum].id}/by-approach`,
           params: {
-            limit: 0,
+            limit: 100,
             offset: 0,
-            sort: 'overallScore',
-            sortdir: -1,
-            phaseId: state.tasks[taskNum].id,
           },
         });
 
         // Add an explicit rank to every submission (since they're sorted)
-        const submissions = submissionsResponse.data.map((submission, index) => ({
+        const submissions = submissionsResponse.data.results.map((submission, index) => ({
           ...submission,
           rank: index + 1,
         }));
@@ -131,67 +121,14 @@ export default new Vuex.Store({
       }
     },
 
-    async loadPhase({ commit, state }, { taskNum }) {
-      try {
-        const phaseResponse = await http.request({
-          method: 'get',
-          url: `challenge_phase/${state.tasks[taskNum].id}`,
-        });
-
-        const phase = phaseResponse.data;
-
-        commit('setPhase', { taskNum, phase });
-      } catch (e) {
-        // TODO: log error
-      }
-    },
-
     async loadSubmissionDetail({ commit }, { taskNum, submissionId }) {
       try {
         const submissionResponse = await http.request({
           method: 'get',
-          url: `covalic_submission/${submissionId}`,
+          url: `submission/${submissionId}/score`,
         });
 
-        const submission = submissionResponse.data;
-        /* 'submission.score' looks like:
-            [
-              // scoreGroup[0]
-              {
-                dataset: "Average",
-                metrics: [
-                  {name: "threshold_jaccard", value: 0.567}
-                ]
-              },
-              // scoreGroup[1]
-              {
-                dataset: "ISIC_0000001",
-                metrics: [
-                  {name: "threshold_jaccard", value: 0.765}
-                ]
-              },
-              ...
-            ]
-
-           'scores' is transformed to:
-            {
-              "Average": {
-                "threshold_jaccard": 0.567
-              },
-              "ISIC_0000001": {
-                "threshold_jaccard": 0.765
-              },
-            }
-         */
-        const scores = submission.score
-          .reduce((allScoreGroups, scoreGroup) => ({
-            ...allScoreGroups,
-            [scoreGroup.dataset]: scoreGroup.metrics
-              .reduce((allScores, score) => ({
-                ...allScores,
-                [score.name]: score.value,
-              }), {}),
-          }), {});
+        const scores = submissionResponse.data;
 
         commit('setScores', { taskNum, submissionId, scores });
       } catch (e) {
