@@ -12,9 +12,9 @@ export default {
     title: 'ISIC Live Challenge',
     stadeApiBase: process.env.VUE_APP_STADE_API_BASE,
     taskIds: {
-      1: '5bee430fc5eaea4f24b5ebee',
-      2: '5bee4310c5eaea4f24b5ebfd',
-      3: '5bee4312c5eaea4f24b5ec0c',
+      1: 49,
+      2: 50,
+      3: 51,
     },
   },
 }[process.env.VUE_APP_CHALLENGE_YEAR];
