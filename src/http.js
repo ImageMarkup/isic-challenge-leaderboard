@@ -9,11 +9,4 @@ const http = axios.create({
   responseType: 'json',
 });
 
-const token = window.location.hash.replace(/^#/, '')
-  || Cookies.get('girderToken')
-  || null;
-if (token) {
-  http.defaults.headers.common['Girder-Token'] = token;
-}
-
 export default http;
