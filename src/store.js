@@ -11,7 +11,7 @@ export default new Vuex.Store({
     tasks: {
       1: {
         id: settings.taskIds[1],
-        name: 'Lesion Boundary Segmentation',
+        name: 'Lesion Diagnosis: Images Only',
         submissions: [],
         metricGroups: [
           {
@@ -50,7 +50,7 @@ export default new Vuex.Store({
       },
       2: {
         id: settings.taskIds[2],
-        name: 'Lesion Attribute Detection',
+        name: 'Lesion Diagnosis: Images and Metadata',
         submissions: [],
         metricGroups: [
           {
@@ -70,12 +70,6 @@ export default new Vuex.Store({
             name: 'Dice Coefficient',
           },
         ],
-      },
-      3: {
-        id: settings.taskIds[3],
-        name: 'Lesion Diagnosis',
-        primaryMetricName: 'Balanced Multiclass Accuracy',
-        submissions: [],
       },
     },
   },

@@ -1,4 +1,12 @@
 export default {
+  2019: {
+    title: 'ISIC Challenge 2019',
+    stadeApiBase: process.env.VUE_APP_STADE_API_BASE,
+    taskIds: {
+      1: 52,
+      2: 53,
+    },
+  },
   2018: {
     title: 'ISIC Challenge 2018',
     stadeApiBase: process.env.VUE_APP_STADE_API_BASE,
