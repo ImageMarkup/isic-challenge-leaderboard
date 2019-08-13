@@ -2,16 +2,16 @@
   <v-app>
     <v-content>
       <v-toolbar>
-        <v-toolbar-title>{{ title }} Leaderboards</v-toolbar-title>
+        <v-toolbar-title>{{ challenge.name }} Leaderboards</v-toolbar-title>
         <v-spacer/>
       </v-toolbar>
       <v-tabs dark>
-        <template v-for="(task, taskNum) in tasks">
+        <template v-for="task in tasks">
           <v-tab :key="`tab-${task.id}`">
-            Task {{ taskNum }}: {{ task.name }}
+            {{ task.name }}
           </v-tab>
           <v-tab-item :key="`item-${task.id}`">
-            <Leaderboard :task-num="taskNum"/>
+            <Leaderboard :task-id="task.id"/>
           </v-tab-item>
         </template>
       </v-tabs>
@@ -22,7 +22,6 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 
-import settings from '@/settings';
 import Leaderboard from '@/components/Leaderboard.vue';
 
 export default {
@@ -34,12 +33,12 @@ export default {
 
   data() {
     return {
-      title: settings.title,
     };
   },
 
   computed: {
     ...mapState([
+      'challenge',
       'tasks',
     ]),
   },

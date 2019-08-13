@@ -8,10 +8,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    tasks: {
+    challenge: {
+      name: '',
+    },
+    tasks: {},
+
+    /*
+    oldTasks: {
       1: {
         id: settings.taskIds[1],
-        name: 'Lesion Diagnosis: Images Only',
+        name: 'Lesion Boundary Segmentation',
         submissions: [],
         metricGroups: [
           {
@@ -50,7 +56,7 @@ export default new Vuex.Store({
       },
       2: {
         id: settings.taskIds[2],
-        name: 'Lesion Diagnosis: Images and Metadata',
+        name: 'Lesion Attribute Detection',
         submissions: [],
         metricGroups: [
           {
@@ -71,32 +77,54 @@ export default new Vuex.Store({
           },
         ],
       },
+      3: {
+        id: settings.taskIds[3],
+        name: 'Lesion Diagnosis',
+        primaryMetricName: 'Balanced Multiclass Accuracy',
+        submissions: [],
+      },
+    },
+    */
+  },
+  getters: {
+    getTaskById: state => (taskId) => {
+      return state.tasks.find(aTask => aTask.id === taskId);
     },
   },
   mutations: {
-    setSubmissions(state, { taskNum, submissions }) {
-      state.tasks[taskNum].submissions = submissions;
+    resetChallenge(state) {
+      state.challenge.name = settings.name;
+      state.tasks = settings.tasks.map((task => ({
+        ...task,
+        submissions: [],
+      })));
     },
-    setScores(state, { taskNum, submissionId, scores }) {
-      const submission = state.tasks[taskNum].submissions
+    setSubmissions(state, { taskId, submissions }) {
+      const task = state.tasks.find(aTask => aTask.id === taskId);
+      Vue.set(task, 'submissions', submissions);
+    },
+    setScores(state, { taskId, submissionId, scores }) {
+      const task = state.tasks.find(aTask => aTask.id === taskId);
+      const submission = task.submissions
         .find(aSubmission => aSubmission.submission_id === submissionId);
       Vue.set(submission, 'scores', scores);
     },
   },
   actions: {
-    async loadAll({ dispatch, state }) {
-      const taskNums = Object.keys(state.tasks);
+    async loadAll({ commit, dispatch, state }) {
+      commit('resetChallenge');
+
       const loadResults = [].concat(
-        taskNums.map(taskNum => dispatch('loadSubmissions', { taskNum })),
+        state.tasks.map(task => dispatch('loadSubmissions', { taskId: task.id })),
       );
       await Promise.all(loadResults);
     },
 
-    async loadSubmissions({ commit, state }, { taskNum }) {
+    async loadSubmissions({ commit }, { taskId }) {
       try {
         const submissionsResponse = await http.request({
           method: 'get',
-          url: `leaderboard/${state.tasks[taskNum].id}/by-approach`,
+          url: `leaderboard/${taskId}/by-approach`,
           params: {
             limit: 100,
             offset: 0,
@@ -109,13 +137,13 @@ export default new Vuex.Store({
           rank: index + 1,
         }));
 
-        commit('setSubmissions', { taskNum, submissions });
+        commit('setSubmissions', { taskId, submissions });
       } catch (e) {
         // TODO: log error
       }
     },
 
-    async loadSubmissionDetail({ commit }, { taskNum, submissionId }) {
+    async loadSubmissionDetail({ commit }, { taskId, submissionId }) {
       try {
         const submissionResponse = await http.request({
           method: 'get',
@@ -124,7 +152,7 @@ export default new Vuex.Store({
 
         const scores = submissionResponse.data;
 
-        commit('setScores', { taskNum, submissionId, scores });
+        commit('setScores', { taskId, submissionId, scores });
       } catch (e) {
         // TODO: log error
       }

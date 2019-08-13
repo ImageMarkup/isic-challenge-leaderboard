@@ -101,10 +101,6 @@ export default {
   },
 
   props: {
-    taskNum: {
-      type: String,
-      required: true,
-    },
     submission: {
       type: Object,
       required: true,
@@ -172,7 +168,7 @@ export default {
           detail: 'Negative Predictive Value',
         },
       ],
-      categories: [
+      possibleCategories: [
         {
           id: 'MEL',
           name: 'Melanoma',
@@ -184,6 +180,10 @@ export default {
         {
           id: 'BCC',
           name: 'Basal cell carcinoma',
+        },
+        {
+          id: 'AK',
+          name: 'Actinic keratosis',
         },
         {
           id: 'AKIEC',
@@ -202,6 +202,14 @@ export default {
           id: 'VASC',
           name: 'Vascular lesion',
         },
+        {
+          id: 'SCC',
+          name: 'Squamous cell carcinoma',
+        },
+        {
+          id: 'UNK',
+          name: 'None of the others / out of distribution',
+        },
       ],
     };
   },
@@ -210,10 +218,18 @@ export default {
     loading() {
       return !this.submission.scores;
     },
+    categories() {
+      if (this.loading) {
+        return [];
+      }
+      return this.possibleCategories.filter(
+        category => Object.keys(this.submission.scores).includes(category.id),
+      );
+    },
   },
   methods: {
     scoreValue(metricGroupId, metricTypeId) {
-      if (this.loading){
+      if (this.loading) {
         // TODO: render blank while this loads
         return null;
       }

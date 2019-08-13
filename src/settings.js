@@ -1,28 +1,35 @@
 export default {
   2019: {
-    title: 'ISIC Challenge 2019',
-    stadeApiBase: process.env.VUE_APP_STADE_API_BASE,
-    taskIds: {
-      1: 52,
-      2: 53,
-    },
+    name: 'ISIC 2019 Challenge',
+    tasks: [
+      {
+        id: 52,
+        type: 'classification',
+        name: 'Lesion Diagnosis: Images Only',
+        primaryMetricName: 'Balanced Multiclass Accuracy',
+      },
+      {
+        id: 53,
+        type: 'classification',
+        name: 'Lesion Diagnosis: Images and Metadata',
+        primaryMetricName: 'Balanced Multiclass Accuracy',
+      },
+    ],
   },
   2018: {
-    title: 'ISIC Challenge 2018',
-    stadeApiBase: process.env.VUE_APP_STADE_API_BASE,
-    taskIds: {
-      1: 45,
-      2: 46,
-      3: 47,
-    },
+    name: 'ISIC 2018 Challenge',
+    taskIds: [
+      45,
+      46,
+      47,
+    ],
   },
   live: {
-    title: 'ISIC Live Challenge',
-    stadeApiBase: process.env.VUE_APP_STADE_API_BASE,
-    taskIds: {
-      1: 49,
-      2: 50,
-      3: 51,
-    },
+    name: 'ISIC Live Challenge',
+    taskIds: [
+      49,
+      50,
+      51,
+    ],
   },
 }[process.env.VUE_APP_CHALLENGE_YEAR];
