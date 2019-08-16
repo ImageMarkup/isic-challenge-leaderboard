@@ -9,7 +9,6 @@
       </template>
       <span>
         {{ (props.value !== null) ? props.value : '' }}
-        {{ (props.value !== null) ? props.value : '' }}
       </span>
     </v-tooltip>
   </td>
