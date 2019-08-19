@@ -4,27 +4,27 @@
       {{ submission.rank }}
     </td>
     <td>
-      <template v-if="submission.organizationUrl">
+      <span>{{ submission.team_name }}</span>
+      <br>
+      <template v-if="submission.team_institution_url">
         <a
-          :href="submission.organizationUrl"
+          :href="submission.team_institution_url"
           target="_blank"
           rel="noopener noreferrer">
-          {{ submission.organization }}
+          {{ submission.team_institution_name || '&lt;Institution&gt;' }}
         </a>
       </template>
       <template v-else>
-        {{ submission.organization }}
+        <span>{{ submission.team_institution_name }}</span>
       </template>
-      <br>
-      <i>({{ submission.creatorName }})</i>
     </td>
     <td>
-      {{ submission.approach }}
+      {{ submission.approach_name }}
     </td>
     <td>
-      <template v-if="submission.documentationUrl">
+      <template v-if="submission.approach_manuscript_url">
         <a
-          :href="submission.documentationUrl"
+          :href="submission.approach_manuscript_url"
           target="_blank"
           rel="noopener">
           <v-icon color="green">assignment</v-icon>
@@ -35,7 +35,7 @@
       </template>
     </td>
     <td>
-      <template v-if="submission.meta.usesExternalData">
+      <template v-if="submission.approach_uses_external_data">
         <v-icon color="orange">public</v-icon>
         Yes
       </template>
@@ -46,8 +46,8 @@
     </td>
     <td>
       <v-tooltip bottom>
-        <span slot="activator">{{ submission.overallScore.toPrecision(3) }}</span>
-        <span>{{ submission.overallScore }}</span>
+        <span slot="activator">{{ submission.overall_score.toPrecision(3) }}</span>
+        <span>{{ submission.overall_score }}</span>
       </v-tooltip>
       <template v-if="expanded">
         <v-icon>expand_less</v-icon>

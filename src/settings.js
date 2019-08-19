@@ -1,20 +1,35 @@
 export default {
+  2019: {
+    name: 'ISIC 2019 Challenge',
+    tasks: [
+      {
+        id: 52,
+        type: 'classification',
+        name: 'Lesion Diagnosis: Images Only',
+        primaryMetricName: 'Balanced Multiclass Accuracy',
+      },
+      {
+        id: 53,
+        type: 'classification',
+        name: 'Lesion Diagnosis: Images and Metadata',
+        primaryMetricName: 'Balanced Multiclass Accuracy',
+      },
+    ],
+  },
   2018: {
-    title: 'ISIC Challenge 2018',
-    covalicApiBase: 'https://challenge.kitware.com/api/v1/',
-    taskIds: {
-      1: '5b1c193356357d41064da2ec',
-      2: '5b1c1a9f56357d41064da2f6',
-      3: '5b1c1aa756357d41064da300',
-    },
+    name: 'ISIC 2018 Challenge',
+    taskIds: [
+      45,
+      46,
+      47,
+    ],
   },
   live: {
-    title: 'ISIC Live Challenge',
-    covalicApiBase: 'https://submission.challenge.isic-archive.com/api/v1/',
-    taskIds: {
-      1: '5bee430fc5eaea4f24b5ebee',
-      2: '5bee4310c5eaea4f24b5ebfd',
-      3: '5bee4312c5eaea4f24b5ec0c',
-    },
+    name: 'ISIC Live Challenge',
+    taskIds: [
+      49,
+      50,
+      51,
+    ],
   },
 }[process.env.VUE_APP_CHALLENGE_YEAR];

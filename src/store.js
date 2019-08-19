@@ -8,11 +8,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    tasks: {
+    challenge: {
+      name: '',
+    },
+    tasks: {},
+
+    /*
+    oldTasks: {
       1: {
         id: settings.taskIds[1],
         name: 'Lesion Boundary Segmentation',
-        phase: null,
         submissions: [],
         metricGroups: [
           {
@@ -52,7 +57,6 @@ export default new Vuex.Store({
       2: {
         id: settings.taskIds[2],
         name: 'Lesion Attribute Detection',
-        phase: null,
         submissions: [],
         metricGroups: [
           {
@@ -76,124 +80,79 @@ export default new Vuex.Store({
       3: {
         id: settings.taskIds[3],
         name: 'Lesion Diagnosis',
-        phase: null,
         primaryMetricName: 'Balanced Multiclass Accuracy',
         submissions: [],
       },
     },
+    */
+  },
+  getters: {
+    getTaskById: state => (taskId) => {
+      return state.tasks.find(aTask => aTask.id === taskId);
+    },
   },
   mutations: {
-    setSubmissions(state, { taskNum, submissions }) {
-      state.tasks[taskNum].submissions = submissions;
+    resetChallenge(state) {
+      state.challenge.name = settings.name;
+      state.tasks = settings.tasks.map((task => ({
+        ...task,
+        submissions: [],
+      })));
     },
-    setPhase(state, { taskNum, phase }) {
-      state.tasks[taskNum].phase = phase;
+    setSubmissions(state, { taskId, submissions }) {
+      const task = state.tasks.find(aTask => aTask.id === taskId);
+      Vue.set(task, 'submissions', submissions);
     },
-    setScores(state, { taskNum, submissionId, scores }) {
-      const submission = state.tasks[taskNum].submissions
-        .find(aSubmission => aSubmission._id === submissionId);
+    setScores(state, { taskId, submissionId, scores }) {
+      const task = state.tasks.find(aTask => aTask.id === taskId);
+      const submission = task.submissions
+        .find(aSubmission => aSubmission.submission_id === submissionId);
       Vue.set(submission, 'scores', scores);
     },
   },
   actions: {
-    async loadAll({ dispatch, state }) {
-      const taskNums = Object.keys(state.tasks);
+    async loadAll({ commit, dispatch, state }) {
+      commit('resetChallenge');
+
       const loadResults = [].concat(
-        taskNums.map(taskNum => dispatch('loadSubmissions', { taskNum })),
-        taskNums.map(taskNum => dispatch('loadPhase', { taskNum })),
+        state.tasks.map(task => dispatch('loadSubmissions', { taskId: task.id })),
       );
       await Promise.all(loadResults);
     },
 
-    async loadSubmissions({ commit, state }, { taskNum }) {
+    async loadSubmissions({ commit }, { taskId }) {
       try {
         const submissionsResponse = await http.request({
           method: 'get',
-          url: 'covalic_submission',
+          url: `leaderboard/${taskId}/by-approach`,
           params: {
-            limit: 0,
+            limit: 100,
             offset: 0,
-            sort: 'overallScore',
-            sortdir: -1,
-            phaseId: state.tasks[taskNum].id,
           },
         });
 
         // Add an explicit rank to every submission (since they're sorted)
-        const submissions = submissionsResponse.data.map((submission, index) => ({
+        const submissions = submissionsResponse.data.results.map((submission, index) => ({
           ...submission,
           rank: index + 1,
         }));
 
-        commit('setSubmissions', { taskNum, submissions });
+        commit('setSubmissions', { taskId, submissions });
       } catch (e) {
         // TODO: log error
       }
     },
 
-    async loadPhase({ commit, state }, { taskNum }) {
-      try {
-        const phaseResponse = await http.request({
-          method: 'get',
-          url: `challenge_phase/${state.tasks[taskNum].id}`,
-        });
-
-        const phase = phaseResponse.data;
-
-        commit('setPhase', { taskNum, phase });
-      } catch (e) {
-        // TODO: log error
-      }
-    },
-
-    async loadSubmissionDetail({ commit }, { taskNum, submissionId }) {
+    async loadSubmissionDetail({ commit }, { taskId, submissionId }) {
       try {
         const submissionResponse = await http.request({
           method: 'get',
-          url: `covalic_submission/${submissionId}`,
+          url: `submission/${submissionId}/score`,
         });
 
-        const submission = submissionResponse.data;
-        /* 'submission.score' looks like:
-            [
-              // scoreGroup[0]
-              {
-                dataset: "Average",
-                metrics: [
-                  {name: "threshold_jaccard", value: 0.567}
-                ]
-              },
-              // scoreGroup[1]
-              {
-                dataset: "ISIC_0000001",
-                metrics: [
-                  {name: "threshold_jaccard", value: 0.765}
-                ]
-              },
-              ...
-            ]
+        const scores = submissionResponse.data;
 
-           'scores' is transformed to:
-            {
-              "Average": {
-                "threshold_jaccard": 0.567
-              },
-              "ISIC_0000001": {
-                "threshold_jaccard": 0.765
-              },
-            }
-         */
-        const scores = submission.score
-          .reduce((allScoreGroups, scoreGroup) => ({
-            ...allScoreGroups,
-            [scoreGroup.dataset]: scoreGroup.metrics
-              .reduce((allScores, score) => ({
-                ...allScores,
-                [score.name]: score.value,
-              }), {}),
-          }), {});
-
-        commit('setScores', { taskNum, submissionId, scores });
+        commit('setScores', { taskId, submissionId, scores });
       } catch (e) {
         // TODO: log error
       }

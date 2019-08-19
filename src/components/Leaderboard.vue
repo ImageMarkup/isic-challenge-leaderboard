@@ -3,7 +3,7 @@
     :headers="headers"
     :items="submissions"
     :loading="loading"
-    item-key="_id"
+    item-key="submission_id"
     hide-actions
     must-sort
     expand
@@ -32,9 +32,8 @@
     <template
       slot="expand"
       slot-scope="{ item: submission }">
-      <component
-        :is="detailComponent"
-        :task-num="taskNum"
+      <Task3SubmissionDetail
+        v-if="task.type === 'classification'"
         :submission="submission"
       />
     </template>
@@ -42,9 +41,9 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import Submission from './Submission.vue';
-import SubmissionDetail from './SubmissionDetail.vue';
+// import SubmissionDetail from './SubmissionDetail.vue';
 import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
 
 export default {
@@ -52,11 +51,12 @@ export default {
 
   components: {
     Submission,
+    Task3SubmissionDetail,
   },
 
   props: {
-    taskNum: {
-      type: String,
+    taskId: {
+      type: Number,
       required: true,
     },
   },
@@ -68,17 +68,15 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      submissions(state) {
-        return state.tasks[this.taskNum].submissions;
-      },
-      primaryMetricName(state) {
-        return state.tasks[this.taskNum].primaryMetricName
-          || state.tasks[this.taskNum].metricTypes
-            .find(metricGroup => metricGroup.primary)
-            .name;
-      },
-    }),
+    ...mapGetters([
+      'getTaskById',
+    ]),
+    task() {
+      return this.getTaskById(this.taskId);
+    },
+    submissions() {
+      return this.task.submissions;
+    },
 
     loading() {
       return !this.submissions.length;
@@ -89,16 +87,16 @@ export default {
     },
 
     missingManuscriptCount() {
-      return this.submissions.filter(submission => !submission.documentationUrl).length;
+      return this.submissions.filter(submission => !submission.approach_manuscript_url).length;
     },
 
     uniqueTeamCount() {
-      return new Set(this.submissions.map(submission => submission.organization)).size;
+      return new Set(this.submissions.map(submission => submission.team_name)).size;
     },
 
     usedExternalCount() {
       return this.submissions.filter(
-        submission => submission.meta.usesExternalData,
+        submission => submission.approach_uses_external_data,
       ).length;
     },
 
@@ -110,46 +108,39 @@ export default {
           value: 'rank',
         },
         {
-          text: 'Team (Submitter User)',
+          text: 'Team',
           subText: `${this.uniqueTeamCount} unique teams`,
-          value: 'organization',
+          value: 'team_name',
         },
         {
           text: 'Approach Name',
-          value: 'approach',
+          value: 'approach_name ',
           sortable: false,
         },
         {
           text: 'Manuscript',
           subText: this.admin ? `${this.missingManuscriptCount} missing` : null,
-          value: 'documentationUrl',
+          value: 'approach_manuscript_url',
           sortable: false,
         },
         {
           text: 'Used External Data',
           subText: `${this.usedExternalCount} yes`,
-          value: 'meta.usesExternalData',
+          value: 'approach_uses_external_data',
         },
         {
           text: 'Primary Metric Value',
-          subText: this.primaryMetricName,
-          value: 'overallScore',
+          subText: this.task.primaryMetricName,
+          value: 'overall_score',
         },
-        ...(
-          this.admin ? [{
-            text: 'Manuscript Reviewed',
-            value: 'meta.documentationReview',
-            sortable: false,
-          }] : []
-        ),
+        // ...(
+        //   this.admin ? [{
+        //     text: 'Manuscript Reviewed',
+        //     value: 'meta.documentationReview',
+        //     sortable: false,
+        //   }] : []
+        // ),
       ];
-    },
-    detailComponent() {
-      return {
-        1: SubmissionDetail,
-        2: SubmissionDetail,
-        3: Task3SubmissionDetail,
-      }[this.taskNum];
     },
   },
   methods: {
@@ -161,7 +152,7 @@ export default {
       props.expanded = !props.expanded;
       if (props.expanded) {
         const submission = props.item;
-        this.loadSubmissionDetail({ taskNum: this.taskNum, submissionId: submission._id });
+        this.loadSubmissionDetail({ taskId: this.taskId, submissionId: submission.submission_id });
       }
     },
   },
