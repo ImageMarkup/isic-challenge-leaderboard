@@ -32,9 +32,8 @@
     <template
       slot="expand"
       slot-scope="{ item: submission }">
-      <component
-        :is="detailComponent"
-        :task-num="taskNum"
+      <Task3SubmissionDetail
+        v-if="task.type === 'classification'"
         :submission="submission"
       />
     </template>
@@ -42,9 +41,9 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import Submission from './Submission.vue';
-import SubmissionDetail from './SubmissionDetail.vue';
+// import SubmissionDetail from './SubmissionDetail.vue';
 import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
 
 export default {
@@ -52,11 +51,12 @@ export default {
 
   components: {
     Submission,
+    Task3SubmissionDetail,
   },
 
   props: {
-    taskNum: {
-      type: String,
+    taskId: {
+      type: Number,
       required: true,
     },
   },
@@ -68,17 +68,15 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      submissions(state) {
-        return state.tasks[this.taskNum].submissions;
-      },
-      primaryMetricName(state) {
-        return state.tasks[this.taskNum].primaryMetricName
-          || state.tasks[this.taskNum].metricTypes
-            .find(metricGroup => metricGroup.primary)
-            .name;
-      },
-    }),
+    ...mapGetters([
+      'getTaskById',
+    ]),
+    task() {
+      return this.getTaskById(this.taskId);
+    },
+    submissions() {
+      return this.task.submissions;
+    },
 
     loading() {
       return !this.submissions.length;
@@ -110,7 +108,7 @@ export default {
           value: 'rank',
         },
         {
-          text: 'Team (Submitter User)',
+          text: 'Team',
           subText: `${this.uniqueTeamCount} unique teams`,
           value: 'team_name',
         },
@@ -132,7 +130,7 @@ export default {
         },
         {
           text: 'Primary Metric Value',
-          subText: this.primaryMetricName,
+          subText: this.task.primaryMetricName,
           value: 'overall_score',
         },
         // ...(
@@ -144,13 +142,6 @@ export default {
         // ),
       ];
     },
-    detailComponent() {
-      return {
-        1: SubmissionDetail,
-        2: SubmissionDetail,
-        3: Task3SubmissionDetail,
-      }[this.taskNum];
-    },
   },
   methods: {
     ...mapActions([
@@ -161,7 +152,7 @@ export default {
       props.expanded = !props.expanded;
       if (props.expanded) {
         const submission = props.item;
-        this.loadSubmissionDetail({ taskNum: this.taskNum, submissionId: submission.submission_id });
+        this.loadSubmissionDetail({ taskId: this.taskId, submissionId: submission.submission_id });
       }
     },
   },

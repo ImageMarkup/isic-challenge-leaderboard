@@ -4,19 +4,19 @@
       {{ submission.rank }}
     </td>
     <td>
+      <span>{{ submission.team_name }}</span>
+      <br>
       <template v-if="submission.team_institution_url">
         <a
           :href="submission.team_institution_url"
           target="_blank"
           rel="noopener noreferrer">
-          {{ submission.team_name }}
+          {{ submission.team_institution_name || '&lt;Institution&gt;' }}
         </a>
       </template>
       <template v-else>
-        {{ submission.team_name }}
+        <span>{{ submission.team_institution_name }}</span>
       </template>
-      <!-- <br>
-      <i>({{ submission.creatorName }})</i> -->
     </td>
     <td>
       {{ submission.approach_name }}

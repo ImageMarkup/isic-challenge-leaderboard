@@ -1,11 +1,8 @@
 import axios from 'axios';
-import * as Cookies from 'js-cookie';
-
-import settings from '@/settings';
 
 const http = axios.create({
-  baseURL: settings.stadeApiBase,
-  withCredentials: false,
+  baseURL: process.env.VUE_APP_STADE_API_BASE,
+  withCredentials: true,
   responseType: 'json',
 });
 
