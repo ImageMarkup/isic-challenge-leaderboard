@@ -32,10 +32,15 @@
     <template
       slot="expand"
       slot-scope="{ item: submission }">
-      <Task3SubmissionDetail
-        v-if="task.type === 'classification'"
-        :submission="submission"
-      />
+      <v-container
+        class="grey lighten-3 inset-shadow"
+        fluid
+      >
+        <Task3SubmissionDetail
+          v-if="task.type === 'classification'"
+          :submission="submission"
+        />
+      </v-container>
     </template>
   </v-data-table>
 </template>
@@ -166,4 +171,6 @@ th
     text-align center
     width auto !important
     display inline-block
+.inset-shadow
+  box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
 </style>
