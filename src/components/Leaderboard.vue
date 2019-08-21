@@ -174,3 +174,12 @@ th
 .inset-shadow
   box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
 </style>
+<style lang="stylus">
+table.v-table tbody td:first-child,
+table.v-table tbody td:not(:first-child),
+table.v-table tbody th:first-child,
+table.v-table tbody th:not(:first-child),
+table.v-table thead td:first-child, table.v-table thead td:not(:first-child),
+table.v-table thead th:first-child, table.v-table thead th:not(:first-child)
+  padding 6px 24px
+</style>
