@@ -290,6 +290,10 @@ export default {
     height 35px !important
   th, td
     background white
+  .metrics-table th,
+  .metrics-table td
+    padding-top 12px !important
+    padding-bottom 12px !important
   .aggregate td:nth-child(3),
   .integral td:nth-child(2),
   .threshold td:nth-child(2)
