@@ -59,14 +59,12 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-.task-tabs .v-tabs__div
-  padding 6px 6px 0
-</style>
-
 <style lang="stylus">
 .task-tabs .v-tabs__container
   height 61px
+
+.task-tabs .v-tabs__div
+  padding 6px 6px 0
 
 .task-tabs .v-tabs__item
   padding-bottom 14px
