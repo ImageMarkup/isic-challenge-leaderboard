@@ -133,7 +133,7 @@ export default new Vuex.Store({
           method: 'get',
           url: `leaderboard/${taskId}/${byTeam ? 'by-team' : 'by-approach'}`,
           params: {
-            limit: 100,
+            limit: 200,
             offset: 0,
           },
         });
