@@ -10,7 +10,9 @@
         <a
           :href="submission.team_institution_url"
           target="_blank"
-          rel="noopener noreferrer">
+          rel="noopener noreferrer"
+          @click.stop
+        >
           {{ submission.team_institution_name || '&lt;Institution&gt;' }}
         </a>
       </template>
@@ -26,7 +28,9 @@
         <a
           :href="submission.approach_manuscript_url"
           target="_blank"
-          rel="noopener">
+          rel="noopener"
+          @click.stop
+        >
           <v-icon color="green">assignment</v-icon>
         </a>
       </template>

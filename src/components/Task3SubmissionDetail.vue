@@ -8,11 +8,8 @@
     <!--TODO: primary highlight -->
     <tr>
       <InfoTh
-        addclass="transparent"
-        header
-      />
-      <InfoTh
         addclass="blue lighten-1 white--text"
+        colspan="2"
         header
       >
         Aggregate Metrics
@@ -30,21 +27,19 @@
       :key="metricType.id"
       class="aggregate"
     >
-      <InfoTh addclass="transparent" />
-      <InfoTh :tooltip="metricType.detail">{{ metricType.name }}</InfoTh>
+      <InfoTh
+        :tooltip="metricType.detail"
+        colspan="2">{{ metricType.name }}</InfoTh>
       <ValueTd
         :value="scoreValue('aggregate', metricType.id)"
       />
     </tr>
-
+    <tr addclass="transparent" />
     <tr>
-      <th
-        class="transparent"
-        rowspan="2"
-      />
       <th
         class="blue lighten-1 white--text"
         rowspan="2"
+        colspan="2"
       >
         Category Metrics
       </th>
