@@ -64,6 +64,10 @@ export default {
       type: Number,
       required: true,
     },
+    byTeam: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   data() {
@@ -80,7 +84,7 @@ export default {
       return this.getTaskById(this.taskId);
     },
     submissions() {
-      return this.task.submissions;
+      return this.byTeam ? this.task.submissionsByTeam : this.task.submissions;
     },
 
     loading() {
@@ -157,7 +161,11 @@ export default {
       props.expanded = !props.expanded;
       if (props.expanded) {
         const submission = props.item;
-        this.loadSubmissionDetail({ taskId: this.taskId, submissionId: submission.submission_id });
+        this.loadSubmissionDetail({
+          taskId: this.taskId,
+          byTeam: this.byTeam,
+          submissionId: submission.submission_id,
+        });
       }
     },
   },
