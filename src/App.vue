@@ -6,8 +6,8 @@
         <v-spacer/>
         <v-toolbar-items>
           <v-switch
-            class="align-self-end"
             v-model="byTeam"
+            class="align-self-end"
             label="Group By Team"
           />
         </v-toolbar-items>
