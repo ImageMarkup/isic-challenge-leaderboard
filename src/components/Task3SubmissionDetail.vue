@@ -1,10 +1,24 @@
 <template>
-  <table>
+  <table
+    class="metrics-table"
+    cellspacing="1"
+    width="100%"
+  >
     <!--TODO: loading text -->
     <!--TODO: primary highlight -->
     <tr>
-      <InfoTh header>Aggregate Metrics</InfoTh>
       <InfoTh
+        addclass="transparent"
+        header
+      />
+      <InfoTh
+        addclass="blue lighten-1 white--text"
+        header
+      >
+        Aggregate Metrics
+      </InfoTh>
+      <InfoTh
+        addclass="blue lighten-1 white--text"
         header
         tooltip="Incorporates all diagnosis categories together"
       >
@@ -14,7 +28,9 @@
     <tr
       v-for="metricType in aggregateMetricTypes"
       :key="metricType.id"
+      class="aggregate"
     >
+      <InfoTh addclass="transparent" />
       <InfoTh :tooltip="metricType.detail">{{ metricType.name }}</InfoTh>
       <ValueTd
         :value="scoreValue('aggregate', metricType.id)"
@@ -22,33 +38,56 @@
     </tr>
 
     <tr>
-      <th rowspan="2">Category Metrics</th>
+      <th
+        class="transparent"
+        rowspan="2"
+      />
+      <th
+        class="blue lighten-1 white--text"
+        rowspan="2"
+      >
+        Category Metrics
+      </th>
       <InfoTh
+        addclass="blue lighten-1 white--text"
         header
         tooltip="The arithmetic mean (macro averaging) of values from all diagnosis categories"
         rowspan="2"
       >
         Mean Value
       </InfoTh>
-      <th :colspan="categories.length">Diagnosis Category</th>
+      <th
+        :colspan="categories.length"
+        class="blue lighten-1 white--text"
+      >
+        Diagnosis Category
+      </th>
     </tr>
     <tr>
       <InfoTh
         v-for="category in categories"
         :key="category.id"
         :tooltip="category.name"
+        addclass="blue darken-2 white--text"
         header
       >
         {{ category.id }}
       </InfoTh>
     </tr>
 
-    <tr>
-      <th header>Integral Metrics</th>
+    <tr class="rotated-header">
+      <th
+        class="grey darken-3 white--text rotate-text"
+        header
+        rowspan="4"
+      >
+        Integral Metrics
+      </th>
     </tr>
     <tr
       v-for="metricType in integralMetricTypes"
       :key="metricType.id"
+      class="integral"
     >
       <InfoTh :tooltip="metricType.detail">{{ metricType.name }}</InfoTh>
       <ValueTd
@@ -61,9 +100,11 @@
       />
     </tr>
 
-    <tr>
+    <tr class="rotated-header">
       <InfoTh
+        addclass="grey darken-3 white--text rotate-text"
         header
+        rowspan="7"
         tooltip="Evaluated using a prediction threshold of 0.5"
       >
         Threshold Metrics
@@ -72,6 +113,7 @@
     <tr
       v-for="metricType in thresholdMetricTypes"
       :key="metricType.id"
+      class="threshold"
     >
       <InfoTh :tooltip="metricType.detail">{{ metricType.name }}</InfoTh>
       <ValueTd
@@ -247,6 +289,25 @@ export default {
   tr, th, td
     height 35px !important
   th, td
-    &:first-child
-      border-right 1px solid rgba(255, 255, 255, 0.12)
+    background white
+  .metrics-table th,
+  .metrics-table td
+    padding-top 12px !important
+    padding-bottom 12px !important
+  .aggregate td:nth-child(3),
+  .integral td:nth-child(2),
+  .threshold td:nth-child(2)
+    background #F6FFF7
+    color #388E3C
+    font-weight 600
+  .rotated-header
+    height 0 !important
+    margin 0 !important
+    padding 0 !important
+  .rotated-header i
+    color white
+    transform rotate(180deg)
+  .rotate-text
+    white-space nowrap
+    writing-mode sideways-lr
 </style>

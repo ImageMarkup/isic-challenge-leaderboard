@@ -45,16 +45,35 @@
       </template>
     </td>
     <td>
-      <v-tooltip bottom>
-        <span slot="activator">{{ submission.overall_score.toPrecision(3) }}</span>
-        <span>{{ submission.overall_score }}</span>
-      </v-tooltip>
-      <template v-if="expanded">
-        <v-icon>expand_less</v-icon>
-      </template>
-      <template v-else>
-        <v-icon>expand_more</v-icon>
-      </template>
+      <v-layout align-center>
+        <v-flex>
+          <v-tooltip bottom>
+            <span slot="activator">{{ submission.overall_score.toPrecision(3) }}</span>
+            <span>{{ submission.overall_score }}</span>
+          </v-tooltip>
+        </v-flex>
+        <v-spacer />
+        <template v-if="expanded">
+          <v-flex>
+            <v-btn
+              class="right"
+              icon
+            >
+              <v-icon>expand_less</v-icon>
+            </v-btn>
+          </v-flex>
+        </template>
+        <template v-else>
+          <v-flex>
+            <v-btn
+              class="right"
+              icon
+            >
+              <v-icon>expand_more</v-icon>
+            </v-btn>
+          </v-flex>
+        </template>
+      </v-layout>
     </td>
   </tr>
 </template>
