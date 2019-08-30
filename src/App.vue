@@ -4,6 +4,13 @@
       <v-toolbar>
         <v-toolbar-title>{{ challenge.name }} Leaderboards</v-toolbar-title>
         <v-spacer/>
+        <v-toolbar-items>
+          <v-switch
+            class="align-self-end"
+            v-model="byTeam"
+            label="Group By Team"
+          />
+        </v-toolbar-items>
       </v-toolbar>
       <v-tabs
         class="task-tabs"
@@ -15,7 +22,10 @@
             {{ task.name }}
           </v-tab>
           <v-tab-item :key="`item-${task.id}`">
-            <Leaderboard :task-id="task.id"/>
+            <Leaderboard
+              :task-id="task.id"
+              :by-team="byTeam"
+            />
           </v-tab-item>
         </template>
       </v-tabs>
@@ -37,6 +47,7 @@ export default {
 
   data() {
     return {
+      byTeam: true,
     };
   },
 
