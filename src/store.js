@@ -1,12 +1,9 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
 
-import http from '@/http';
-import settings from '@/settings';
+import http from './http';
+import settings from './settings';
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
+export default {
   state: {
     challenge: {
       name: '',
@@ -90,9 +87,11 @@ export default new Vuex.Store({
     getTaskById: state => taskId => state.tasks.find(aTask => aTask.id === taskId),
   },
   mutations: {
-    resetChallenge(state) {
-      state.challenge.name = settings.name;
-      state.tasks = settings.tasks.map((task => ({
+    resetChallenge(state, { challengeId }) {
+      const challengeSettings = settings[challengeId];
+
+      state.challenge.name = challengeSettings.name;
+      state.tasks = challengeSettings.tasks.map((task => ({
         ...task,
         submissions: [],
         submissionsByTeam: [],
@@ -117,8 +116,8 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async loadAll({ commit, dispatch, state }) {
-      commit('resetChallenge');
+    async loadAll({ commit, dispatch, state }, { challengeId }) {
+      commit('resetChallenge', { challengeId });
 
       const loadResults = [].concat(
         state.tasks.map(task => dispatch('loadSubmissions', { taskId: task.id, byTeam: true })),
@@ -128,26 +127,22 @@ export default new Vuex.Store({
     },
 
     async loadSubmissions({ commit }, { taskId, byTeam }) {
-      try {
-        const submissionsResponse = await http.request({
-          method: 'get',
-          url: `leaderboard/${taskId}/${byTeam ? 'by-team' : 'by-approach'}`,
-          params: {
-            limit: 200,
-            offset: 0,
-          },
-        });
+      const submissionsResponse = await http.request({
+        method: 'get',
+        url: `leaderboard/${taskId}/${byTeam ? 'by-team' : 'by-approach'}`,
+        params: {
+          limit: 200,
+          offset: 0,
+        },
+      });
 
-        // Add an explicit rank to every submission (since they're sorted)
-        const submissions = submissionsResponse.data.results.map((submission, index) => ({
-          ...submission,
-          rank: index + 1,
-        }));
+      // Add an explicit rank to every submission (since they're sorted)
+      const submissions = submissionsResponse.data.results.map((submission, index) => ({
+        ...submission,
+        rank: index + 1,
+      }));
 
-        commit('setSubmissions', { taskId, byTeam, submissions });
-      } catch (e) {
-        // TODO: log error
-      }
+      commit('setSubmissions', { taskId, byTeam, submissions });
     },
 
     async loadSubmissionDetail({ commit }, { taskId, byTeam, submissionId }) {
@@ -167,4 +162,4 @@ export default new Vuex.Store({
       }
     },
   },
-});
+};

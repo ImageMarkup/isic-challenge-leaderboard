@@ -126,8 +126,8 @@
 </template>
 
 <script>
-import InfoTh from '@/components/InfoTh.vue';
-import ValueTd from '@/components/ValueTd.vue';
+import InfoTh from './InfoTh.vue';
+import ValueTd from './ValueTd.vue';
 
 export default {
   name: 'Task3SubmissionDetail',
