@@ -1,8 +1,14 @@
 import axios from 'axios';
 
+let baseURL;
+try {
+  baseURL = process.env.VUE_APP_STADE_API_BASE;
+} catch (e) {
+  baseURL = 'https://challenge.isic-archive.com/api/';
+}
+
 const http = axios.create({
-  baseURL: (process && process.env && process.env.VUE_APP_STADE_API_BASE)
-    || 'https://challenge.isic-archive.com/api/',
+  baseURL,
   // withCredentials: true,
   responseType: 'json',
 });
