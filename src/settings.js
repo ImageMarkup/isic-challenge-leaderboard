@@ -32,4 +32,4 @@ export default {
       51,
     ],
   },
-}[process.env.VUE_APP_CHALLENGE_YEAR];
+};

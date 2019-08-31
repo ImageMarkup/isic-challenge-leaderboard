@@ -1,193 +1,94 @@
 <template>
-  <v-data-table
-    :headers="headers"
-    :items="submissions"
-    :loading="loading"
-    item-key="submission_id"
-    hide-actions
-    must-sort
-    expand
-  >
-    <template
-      slot="headerCell"
-      slot-scope="{ header }">
-      <div>
-        {{ header.text }}
-        <template v-if="header.subText">
-          <br>
-          &lt;{{ header.subText }}&gt;
-        </template>
-      </div>
-    </template>
-    <template
-      slot="items"
-      slot-scope="props"
-    >
-      <Submission
-        :submission="props.item"
-        :expanded="props.expanded || false"
-        @click.native="toggleExpand(props)"
-      />
-    </template>
-    <template
-      slot="expand"
-      slot-scope="{ item: submission }">
-      <v-container
-        class="grey lighten-3 inset-shadow"
-        fluid
-      >
-        <Task3SubmissionDetail
-          v-if="task.type === 'classification'"
-          :submission="submission"
+  <div>
+    <v-toolbar>
+      <v-toolbar-title>{{ challenge.name }} Leaderboards</v-toolbar-title>
+      <v-spacer/>
+      <v-toolbar-items>
+        <v-switch
+          v-model="byTeam"
+          class="align-self-end"
+          label="Group By Team"
         />
-      </v-container>
-    </template>
-  </v-data-table>
+      </v-toolbar-items>
+    </v-toolbar>
+    <v-tabs
+      class="task-tabs"
+      hide-slider
+      dark
+    >
+      <template v-for="task in tasks">
+        <v-tab :key="`tab-${task.id}`">
+          {{ task.name }}
+        </v-tab>
+        <v-tab-item :key="`item-${task.id}`">
+          <TaskLeaderboard
+            :task-id="task.id"
+            :by-team="byTeam"
+          />
+        </v-tab-item>
+      </template>
+    </v-tabs>
+  </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-import Submission from './Submission.vue';
-// import SubmissionDetail from './SubmissionDetail.vue';
-import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
+import { mapActions, mapState } from 'vuex';
+
+import TaskLeaderboard from './TaskLeaderboard.vue';
 
 export default {
   name: 'Leaderboard',
 
   components: {
-    Submission,
-    Task3SubmissionDetail,
+    TaskLeaderboard,
   },
 
   props: {
-    taskId: {
+    challengeId: {
       type: Number,
-      required: true,
-    },
-    byTeam: {
-      type: Boolean,
       required: true,
     },
   },
 
   data() {
     return {
-      admin: false,
+      byTeam: true,
     };
   },
 
   computed: {
-    ...mapGetters([
-      'getTaskById',
+    ...mapState([
+      'challenge',
+      'tasks',
     ]),
-    task() {
-      return this.getTaskById(this.taskId);
-    },
-    submissions() {
-      return this.byTeam ? this.task.submissionsByTeam : this.task.submissions;
-    },
-
-    loading() {
-      return !this.submissions.length;
-    },
-
-    submissionsCount() {
-      return this.submissions.length;
-    },
-
-    missingManuscriptCount() {
-      return this.submissions.filter(submission => !submission.approach_manuscript_url).length;
-    },
-
-    uniqueTeamCount() {
-      return new Set(this.submissions.map(submission => submission.team_name)).size;
-    },
-
-    usedExternalCount() {
-      return this.submissions.filter(
-        submission => submission.approach_uses_external_data,
-      ).length;
-    },
-
-    headers() {
-      return [
-        {
-          text: 'Rank',
-          subText: `${this.submissionsCount} total`,
-          value: 'rank',
-        },
-        {
-          text: 'Team',
-          subText: `${this.uniqueTeamCount} unique teams`,
-          value: 'team_name',
-        },
-        {
-          text: 'Approach Name',
-          value: 'approach_name ',
-          sortable: false,
-        },
-        {
-          text: 'Manuscript',
-          subText: this.admin ? `${this.missingManuscriptCount} missing` : null,
-          value: 'approach_manuscript_url',
-          sortable: false,
-        },
-        {
-          text: 'Used External Data',
-          subText: `${this.usedExternalCount} yes`,
-          value: 'approach_uses_external_data',
-        },
-        {
-          text: 'Primary Metric Value',
-          subText: this.task.primaryMetricName,
-          value: 'overall_score',
-        },
-        // ...(
-        //   this.admin ? [{
-        //     text: 'Manuscript Reviewed',
-        //     value: 'meta.documentationReview',
-        //     sortable: false,
-        //   }] : []
-        // ),
-      ];
-    },
   },
+
+  async created() {
+    await this.loadAll({ challengeId: this.challengeId });
+  },
+
   methods: {
     ...mapActions([
-      'loadSubmissionDetail',
+      'loadAll',
     ]),
-    toggleExpand(props) {
-      // eslint-disable-next-line no-param-reassign
-      props.expanded = !props.expanded;
-      if (props.expanded) {
-        const submission = props.item;
-        this.loadSubmissionDetail({
-          taskId: this.taskId,
-          byTeam: this.byTeam,
-          submissionId: submission.submission_id,
-        });
-      }
-    },
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="stylus">
-th
-  div
-    text-align center
-    width auto !important
-    display inline-block
-.inset-shadow
-  box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
-</style>
 <style lang="stylus">
-table.v-table tbody td:first-child,
-table.v-table tbody td:not(:first-child),
-table.v-table tbody th:first-child,
-table.v-table tbody th:not(:first-child),
-table.v-table thead td:first-child, table.v-table thead td:not(:first-child),
-table.v-table thead th:first-child, table.v-table thead th:not(:first-child)
-  padding 6px 24px
+.task-tabs .v-tabs__container
+  height 61px
+
+.task-tabs .v-tabs__div
+  padding 6px 6px 0
+
+.task-tabs .v-tabs__item
+  padding-bottom 14px
+
+.task-tabs .v-tabs__item.v-tabs__item--active
+  background #fff
+  border-top 2px solid #1976d2
+  color #757575
+  padding-bottom 12px
+  padding-top 8px
 </style>
