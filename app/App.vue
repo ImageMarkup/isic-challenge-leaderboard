@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-content>
-      <Leaderboard :challenge-id="2019" />
+      <Leaderboard :challenge-id="'2019'" />
     </v-content>
   </v-app>
 </template>

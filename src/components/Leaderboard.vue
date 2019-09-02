@@ -45,7 +45,7 @@ export default {
 
   props: {
     challengeId: {
-      type: Number,
+      type: String,
       required: true,
     },
   },
