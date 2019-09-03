@@ -48,11 +48,15 @@ export default {
       type: String,
       required: true,
     },
+    byTeamDefault: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   data() {
     return {
-      byTeam: true,
+      byTeam: this.byTeamDefault,
     };
   },
 

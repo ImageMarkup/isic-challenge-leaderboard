@@ -1,7 +1,10 @@
 <template>
   <v-app>
     <v-content>
-      <Leaderboard :challenge-id="challengeId" />
+      <Leaderboard
+        :challenge-id="challengeId"
+        :by-team-default="true"
+      />
     </v-content>
   </v-app>
 </template>
