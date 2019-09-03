@@ -45,14 +45,18 @@ export default {
 
   props: {
     challengeId: {
-      type: Number,
+      type: String,
       required: true,
+    },
+    byTeamDefault: {
+      type: Boolean,
+      default: true,
     },
   },
 
   data() {
     return {
-      byTeam: true,
+      byTeam: this.byTeamDefault,
     };
   },
 
@@ -64,12 +68,12 @@ export default {
   },
 
   async created() {
-    await this.loadAll({ challengeId: this.challengeId });
+    await this.loadChallenge({ challengeId: this.challengeId });
   },
 
   methods: {
     ...mapActions([
-      'loadAll',
+      'loadChallenge',
     ]),
   },
 };

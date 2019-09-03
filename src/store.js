@@ -1,98 +1,27 @@
 import Vue from 'vue';
 
 import http from './http';
-import settings from './settings';
 
 export default {
   state: {
     challenge: {
+      id: null,
       name: '',
     },
     tasks: {},
-
-    /*
-    oldTasks: {
-      1: {
-        id: settings.taskIds[1],
-        name: 'Lesion Boundary Segmentation',
-        submissions: [],
-        metricGroups: [
-          {
-            id: 'Average',
-            name: 'Mean',
-            primary: true,
-          },
-        ],
-        metricTypes: [
-          {
-            id: 'threshold_jaccard',
-            name: 'Threshold Jaccard Index',
-            primary: true,
-          },
-          {
-            id: 'jaccard',
-            name: 'Jaccard Index',
-          },
-          {
-            id: 'dice',
-            name: 'Dice Coefficient',
-          },
-          {
-            id: 'sensitivity',
-            name: 'Sensitivity',
-          },
-          {
-            id: 'specificity',
-            name: 'Specificity',
-          },
-          {
-            id: 'accuracy',
-            name: 'Accuracy',
-          },
-        ],
-      },
-      2: {
-        id: settings.taskIds[2],
-        name: 'Lesion Attribute Detection',
-        submissions: [],
-        metricGroups: [
-          {
-            id: 'Average',
-            name: 'Macro Average',
-            primary: true,
-          },
-        ],
-        metricTypes: [
-          {
-            id: 'jaccard',
-            name: 'Jaccard Index',
-            primary: true,
-          },
-          {
-            id: 'dice',
-            name: 'Dice Coefficient',
-          },
-        ],
-      },
-      3: {
-        id: settings.taskIds[3],
-        name: 'Lesion Diagnosis',
-        primaryMetricName: 'Balanced Multiclass Accuracy',
-        submissions: [],
-      },
-    },
-    */
   },
   getters: {
     getTaskById: state => taskId => state.tasks.find(aTask => aTask.id === taskId),
   },
   mutations: {
-    resetChallenge(state, { challengeId }) {
-      const challengeSettings = settings[challengeId];
-
-      state.challenge.name = challengeSettings.name;
-      state.tasks = challengeSettings.tasks.map((task => ({
+    setChallenge(state, { challenge }) {
+      state.challenge.id = challenge.id;
+      state.challenge.name = challenge.name;
+      state.tasks = challenge.tasks.map((task => ({
         ...task,
+        // TODO: This hardcoding of primaryMetricName is not always accurate
+        primaryMetricName:
+          task.type === 'classification' ? 'Balanced Multiclass Accuracy' : 'Jaccard',
         submissions: [],
         submissionsByTeam: [],
       })));
@@ -116,8 +45,13 @@ export default {
     },
   },
   actions: {
-    async loadAll({ commit, dispatch, state }, { challengeId }) {
-      commit('resetChallenge', { challengeId });
+    async loadChallenge({ commit, dispatch, state }, { challengeId }) {
+      const challengeResponse = await http.request({
+        method: 'get',
+        url: `challenge/${challengeId}`,
+      });
+      const challenge = challengeResponse.data;
+      commit('setChallenge', { challenge });
 
       const loadResults = [].concat(
         state.tasks.map(task => dispatch('loadSubmissions', { taskId: task.id, byTeam: true })),

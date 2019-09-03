@@ -23,7 +23,7 @@
       slot="items"
       slot-scope="props"
     >
-      <Submission
+      <SubmissionRow
         :submission="props.item"
         :expanded="props.expanded || false"
         @click.native="toggleExpand(props)"
@@ -47,7 +47,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import Submission from './Submission.vue';
+import SubmissionRow from './SubmissionRow.vue';
 // import SubmissionDetail from './SubmissionDetail.vue';
 import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
 
@@ -55,7 +55,7 @@ export default {
   name: 'TaskLeaderboard',
 
   components: {
-    Submission,
+    SubmissionRow,
     Task3SubmissionDetail,
   },
 
