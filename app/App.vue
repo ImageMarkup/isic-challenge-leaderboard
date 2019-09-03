@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-content>
-      <Leaderboard :challenge-id="'2019'" />
+      <Leaderboard :challenge-id="challengeId" />
     </v-content>
   </v-app>
 </template>
@@ -13,6 +13,11 @@ export default {
   name: 'App',
   components: {
     Leaderboard,
+  },
+  data() {
+    return {
+      challengeId: process.env.VUE_APP_CHALLENGE_ID,
+    };
   },
 };
 </script>

@@ -64,12 +64,12 @@ export default {
   },
 
   async created() {
-    await this.loadAll({ challengeId: this.challengeId });
+    await this.loadChallenge({ challengeId: this.challengeId });
   },
 
   methods: {
     ...mapActions([
-      'loadAll',
+      'loadChallenge',
     ]),
   },
 };
