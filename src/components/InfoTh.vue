@@ -15,7 +15,7 @@
           small
           v-on="on"
         >
-          info
+          mdi-information
         </v-icon>
       </template>
       <span>

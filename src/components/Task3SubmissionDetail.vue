@@ -31,7 +31,7 @@
         :tooltip="metric.detail"
         colspan="2">{{ metric.name }}</InfoTh>
       <ValueTd
-        :value="loading ? null : submission.scores.aggregate[metric.id]"
+        :value="loading ? null : scores.aggregate[metric.id]"
       />
     </tr>
     <tr addclass="transparent" />
@@ -86,12 +86,12 @@
     >
       <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
       <ValueTd
-        :value="loading ? null : submission.scores.macro_average[metric.id]"
+        :value="loading ? null : scores.macro_average[metric.id]"
       />
       <ValueTd
         v-for="category in categories"
         :key="category.id"
-        :value="loading ? null : submission.scores.per_category[metric.id][category.id]"
+        :value="loading ? null : scores.per_category[metric.id][category.id]"
       />
     </tr>
 
@@ -112,20 +112,19 @@
     >
       <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
       <ValueTd
-        :value="loading ? null : submission.scores.macro_average[metric.id]"
+        :value="loading ? null : scores.macro_average[metric.id]"
       />
       <ValueTd
         v-for="category in categories"
         :key="category.id"
-        :value="loading ? null : submission.scores.per_category[metric.id][category.id]"
+        :value="loading ? null : scores.per_category[metric.id][category.id]"
       />
     </tr>
-
-
   </table>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
 import InfoTh from './InfoTh.vue';
 import ValueTd from './ValueTd.vue';
 
@@ -252,19 +251,34 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      scores(state) {
+        return state.submissionScores[this.submission.submission_id];
+      },
+    }),
     loading() {
-      return !this.submission.scores;
+      return !this.scores;
     },
     categories() {
       if (this.loading) {
         return [];
       }
       // Accuracy can be a representative for all per-category metrics
-      const usedCategoryIds = Object.keys(this.submission.scores.per_category.accuracy);
+      const usedCategoryIds = Object.keys(this.scores.per_category.accuracy);
       return this.possibleCategories.filter(
         category => usedCategoryIds.includes(category.id),
       );
     },
+  },
+  created() {
+    this.loadSubmissionScores({
+      submissionId: this.submission.submission_id,
+    });
+  },
+  methods: {
+    ...mapActions([
+      'loadSubmissionScores',
+    ]),
   },
 };
 </script>

@@ -5,7 +5,7 @@
     :loading="loading"
     no-data-text="Loading..."
     item-key="name"
-    hide-actions
+    hide-default-footer
     dark
   >
     <template
@@ -15,7 +15,7 @@
         <th
           v-for="header in headers"
           :key="header.value"
-          class="column text-xs-left"
+          class="column text-left"
         >
           {{ header.text }}
         </th>

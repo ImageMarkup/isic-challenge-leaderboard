@@ -31,60 +31,42 @@
           rel="noopener"
           @click.stop
         >
-          <v-icon color="green">assignment</v-icon>
+          <v-icon color="green">mdi-clipboard-text</v-icon>
         </a>
       </template>
       <template v-else>
-        <v-icon color="red">close</v-icon>
+        <v-icon color="red">mdi-close</v-icon>
       </template>
     </td>
     <td>
       <template v-if="submission.approach_uses_external_data">
-        <v-icon color="orange">public</v-icon>
+        <v-icon color="orange">mdi-earth</v-icon>
         Yes
       </template>
       <template v-else>
-        <v-icon color="blue">vpn_lock</v-icon>
+        <v-icon color="blue">mdi-earth-off</v-icon>
         No
       </template>
     </td>
-    <td>
-      <v-layout align-center>
-        <v-flex>
-          <v-tooltip bottom>
-            <span slot="activator">{{ submission.overall_score.toPrecision(3) }}</span>
-            <span>{{ submission.overall_score }}</span>
-          </v-tooltip>
-        </v-flex>
-        <v-spacer />
-        <template v-if="expanded">
-          <v-flex>
-            <v-btn
-              class="right"
-              icon
-            >
-              <v-icon>expand_less</v-icon>
-            </v-btn>
-          </v-flex>
+    <td class="d-flex align-center justify-space-between">
+      <v-tooltip bottom>
+        <template #activator="{ on }">
+          <span v-on="on">{{ submission.overall_score.toPrecision(3) }}</span>
         </template>
-        <template v-else>
-          <v-flex>
-            <v-btn
-              class="right"
-              icon
-            >
-              <v-icon>expand_more</v-icon>
-            </v-btn>
-          </v-flex>
-        </template>
-      </v-layout>
+        <span>{{ submission.overall_score }}</span>
+      </v-tooltip>
+
+      <v-btn icon>
+        <!-- TODO: Prevent focus -->
+        <v-icon>{{ expanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+      </v-btn>
     </td>
   </tr>
 </template>
 
 <script>
 export default {
-  name: 'Submission',
+  name: 'SubmissionRow',
 
   props: {
     submission: {

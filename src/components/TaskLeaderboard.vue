@@ -4,10 +4,22 @@
     :items="submissions"
     :loading="loading"
     item-key="submission_id"
-    hide-actions
+    hide-default-footer
     must-sort
-    expand
   >
+    <template
+      v-slot:[`header.${header.value}`]="{ header }"
+      v-for="header in headers"
+    >
+      <div :key="header.value">
+        {{ header.text }}
+        <template v-if="header.subText">
+          <br>
+          &lt;{{ header.subText }}&gt;
+        </template>
+      </div>
+    </template>
+
     <template
       slot="headerCell"
       slot-scope="{ header }">
@@ -19,34 +31,31 @@
         </template>
       </div>
     </template>
-    <template
-      slot="items"
-      slot-scope="props"
-    >
+    <template #item="{ item: submission, isExpanded, expand }">
       <SubmissionRow
-        :submission="props.item"
-        :expanded="props.expanded || false"
-        @click.native="toggleExpand(props)"
+        :submission="submission"
+        :expanded="isExpanded"
+        @click.native="expand(!isExpanded)"
       />
     </template>
-    <template
-      slot="expand"
-      slot-scope="{ item: submission }">
-      <v-container
+    <template #expanded-item="{ item: submission, headers }">
+      <td
+        :colspan="headers.length"
         class="grey lighten-3 inset-shadow"
-        fluid
       >
-        <Task3SubmissionDetail
-          v-if="task.type === 'classification'"
-          :submission="submission"
-        />
-      </v-container>
+        <v-container fluid>
+          <Task3SubmissionDetail
+            v-if="task.type === 'classification'"
+            :submission="submission"
+          />
+        </v-container>
+      </td>
     </template>
   </v-data-table>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import SubmissionRow from './SubmissionRow.vue';
 // import SubmissionDetail from './SubmissionDetail.vue';
 import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
@@ -150,23 +159,6 @@ export default {
         //   }] : []
         // ),
       ];
-    },
-  },
-  methods: {
-    ...mapActions([
-      'loadSubmissionDetail',
-    ]),
-    toggleExpand(props) {
-      // eslint-disable-next-line no-param-reassign
-      props.expanded = !props.expanded;
-      if (props.expanded) {
-        const submission = props.item;
-        this.loadSubmissionDetail({
-          taskId: this.taskId,
-          byTeam: this.byTeam,
-          submissionId: submission.submission_id,
-        });
-      }
     },
   },
 };
