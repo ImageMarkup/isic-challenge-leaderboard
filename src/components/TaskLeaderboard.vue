@@ -44,8 +44,12 @@
         class="grey lighten-3 inset-shadow"
       >
         <v-container fluid>
+          <SegmentationSubmissionDetail
+            v-if="task.type === 'segmentation'"
+            :submission="submission"
+          />
           <Task3SubmissionDetail
-            v-if="task.type === 'classification'"
+            v-else-if="task.type === 'classification'"
             :submission="submission"
           />
         </v-container>
@@ -58,6 +62,7 @@
 import { mapGetters } from 'vuex';
 import SubmissionRow from './SubmissionRow.vue';
 // import SubmissionDetail from './SubmissionDetail.vue';
+import SegmentationSubmissionDetail from './SegmentationSubmissionDetail.vue';
 import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
 
 export default {
@@ -65,6 +70,7 @@ export default {
 
   components: {
     SubmissionRow,
+    SegmentationSubmissionDetail,
     Task3SubmissionDetail,
   },
 

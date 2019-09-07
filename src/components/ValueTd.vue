@@ -1,5 +1,11 @@
 <template functional>
-  <td v-bind="data.attrs">
+  <td
+    v-bind="data.attrs"
+    :class="[
+      data.class,
+      data.staticClass
+    ]"
+  >
     <v-tooltip bottom>
       <template #activator="{ on }">
         <!--TODO: activate on the whole <td>, not just the span-->

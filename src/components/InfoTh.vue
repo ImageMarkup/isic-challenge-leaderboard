@@ -1,6 +1,9 @@
 <template functional>
   <component
-    :class="props.addclass"
+    :class="[
+      data.class,
+      data.staticClass
+    ]"
     :is="props.header ? 'th' : 'td'"
     v-bind="data.attrs"
   >
@@ -36,10 +39,6 @@ export default {
     header: {
       type: Boolean,
       default: false,
-    },
-    addclass: {
-      type: String,
-      default: '',
     },
   },
 };
