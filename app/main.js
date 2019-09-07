@@ -8,17 +8,23 @@ import '@mdi/font/css/materialdesignicons.css';
 
 // Vuex
 import Vuex from 'vuex';
-import store from '../src/store';
+
+// Leaderboard
+import leaderboardPlugin from '../src/plugin';
 
 // Root app
 import App from './App.vue';
 
 Vue.use(Vuetify);
+
 Vue.use(Vuex);
+const store = new Vuex.Store({});
+leaderboardPlugin(store);
+
 Vue.config.productionTip = false;
 
 new Vue({
-  store: new Vuex.Store(store),
+  store,
   vuetify: new Vuetify({}),
   render: h => h(App),
 }).$mount('#app');

@@ -80,7 +80,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
+    ...mapGetters('leaderboard', [
       'getTaskById',
     ]),
     task() {

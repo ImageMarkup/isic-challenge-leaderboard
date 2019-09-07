@@ -64,7 +64,7 @@ export default {
   },
 
   computed: {
-    ...mapState({
+    ...mapState('leaderboard', {
       metricTypes(state) {
         return state.tasks[this.taskNum].metricTypes;
       },

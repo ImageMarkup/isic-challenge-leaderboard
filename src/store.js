@@ -3,6 +3,7 @@ import Vue from 'vue';
 import http from './http';
 
 export default {
+  namespaced: true,
   state: {
     challenge: {
       id: null,

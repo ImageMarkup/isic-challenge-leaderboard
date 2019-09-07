@@ -61,7 +61,7 @@ export default {
   },
 
   computed: {
-    ...mapState([
+    ...mapState('leaderboard', [
       'challenge',
       'tasks',
     ]),
@@ -72,7 +72,7 @@ export default {
   },
 
   methods: {
-    ...mapActions([
+    ...mapActions('leaderboard', [
       'loadChallenge',
     ]),
   },

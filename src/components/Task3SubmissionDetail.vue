@@ -251,7 +251,7 @@ export default {
   },
 
   computed: {
-    ...mapState({
+    ...mapState('leaderboard', {
       scores(state) {
         return state.submissionScores[this.submission.submission_id];
       },
@@ -276,7 +276,7 @@ export default {
     });
   },
   methods: {
-    ...mapActions([
+    ...mapActions('leaderboard', [
       'loadSubmissionScores',
     ]),
   },
