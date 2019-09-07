@@ -125,7 +125,7 @@ import InfoTh from './InfoTh.vue';
 import ValueTd from './ValueTd.vue';
 
 export default {
-  name: 'Task3SubmissionDetail',
+  name: 'ClassificationSubmissionDetail',
 
   components: {
     InfoTh,

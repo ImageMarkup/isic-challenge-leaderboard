@@ -48,7 +48,7 @@
             v-if="task.type === 'segmentation'"
             :submission="submission"
           />
-          <Task3SubmissionDetail
+          <ClassificationSubmissionDetail
             v-else-if="task.type === 'classification'"
             :submission="submission"
           />
@@ -63,7 +63,7 @@ import { mapGetters } from 'vuex';
 import SubmissionRow from './SubmissionRow.vue';
 // import SubmissionDetail from './SubmissionDetail.vue';
 import SegmentationSubmissionDetail from './SegmentationSubmissionDetail.vue';
-import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
+import ClassificationSubmissionDetail from './ClassificationSubmissionDetail.vue';
 
 export default {
   name: 'TaskLeaderboard',
@@ -71,7 +71,7 @@ export default {
   components: {
     SubmissionRow,
     SegmentationSubmissionDetail,
-    Task3SubmissionDetail,
+    ClassificationSubmissionDetail,
   },
 
   props: {
