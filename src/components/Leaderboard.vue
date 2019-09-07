@@ -50,7 +50,7 @@ export default {
     },
     byTeamDefault: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   },
 
