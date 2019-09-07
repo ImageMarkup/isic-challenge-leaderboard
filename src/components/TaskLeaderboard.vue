@@ -79,12 +79,6 @@ export default {
     },
   },
 
-  data() {
-    return {
-      admin: false,
-    };
-  },
-
   computed: {
     ...mapGetters([
       'getTaskById',
@@ -137,7 +131,6 @@ export default {
         },
         {
           text: 'Manuscript',
-          subText: this.admin ? `${this.missingManuscriptCount} missing` : null,
           value: 'approach_manuscript_url',
           sortable: false,
         },
@@ -151,13 +144,6 @@ export default {
           subText: this.task.primaryMetricName,
           value: 'overall_score',
         },
-        // ...(
-        //   this.admin ? [{
-        //     text: 'Manuscript Reviewed',
-        //     value: 'meta.documentationReview',
-        //     sortable: false,
-        //   }] : []
-        // ),
       ];
     },
   },
