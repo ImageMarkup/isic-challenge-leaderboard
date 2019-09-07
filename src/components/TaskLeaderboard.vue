@@ -150,22 +150,17 @@ export default {
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
-th
-  div
-    text-align center
-    width auto !important
-    display inline-block
-.inset-shadow
-  box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
-</style>
-<style lang="stylus">
-table.v-table tbody td:first-child,
-table.v-table tbody td:not(:first-child),
-table.v-table tbody th:first-child,
-table.v-table tbody th:not(:first-child),
-table.v-table thead td:first-child, table.v-table thead td:not(:first-child),
-table.v-table thead th:first-child, table.v-table thead th:not(:first-child)
-  padding 6px 24px
+  .v-data-table
+    td,th
+      padding 6px 24px
+
+    th
+      div
+        text-align center
+        width auto !important
+        display inline-block
+
+  .inset-shadow
+    box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
 </style>

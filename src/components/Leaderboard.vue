@@ -79,20 +79,16 @@ export default {
 };
 </script>
 
-<style lang="stylus">
-.task-tabs .v-tabs__container
-  height 61px
+<style scoped lang="stylus">
+  .v-tabs
+    .v-tabs-bar
+      height 61px
 
-.task-tabs .v-tabs__div
-  padding 6px 6px 0
+      .v-tab
+        margin 6px 6px 0
 
-.task-tabs .v-tabs__item
-  padding-bottom 14px
-
-.task-tabs .v-tabs__item.v-tabs__item--active
-  background #fff
-  border-top 2px solid #1976d2
-  color #757575
-  padding-bottom 12px
-  padding-top 8px
+        &.v-tab--active
+          background #fff
+          border-top 2px solid #1976d2
+          color #757575
 </style>
