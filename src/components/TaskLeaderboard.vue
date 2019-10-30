@@ -62,7 +62,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import SubmissionRow from './SubmissionRow.vue';
-// import SubmissionDetail from './SubmissionDetail.vue';
 import SegmentationSubmissionDetail from './SegmentationSubmissionDetail.vue';
 import ClassificationSubmissionDetail from './ClassificationSubmissionDetail.vue';
 
@@ -150,6 +149,11 @@ export default {
           text: 'Primary Metric Value',
           subText: this.task.primaryMetricName,
           value: 'overall_score',
+        },
+        {
+          text: '', // details
+          value: null,
+          sortable: false,
         },
       ];
     },

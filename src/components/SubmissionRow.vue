@@ -54,14 +54,15 @@
         No
       </template>
     </td>
-    <td class="d-flex align-center justify-space-between">
+    <td>
       <v-tooltip bottom>
         <template #activator="{ on }">
           <span v-on="on">{{ submission.overall_score.toPrecision(3) }}</span>
         </template>
         <span>{{ submission.overall_score }}</span>
       </v-tooltip>
-
+    </td>
+    <td>
       <v-btn icon>
         <!-- TODO: Prevent focus -->
         <v-icon>{{ expanded ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
