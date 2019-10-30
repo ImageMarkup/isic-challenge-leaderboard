@@ -3,6 +3,7 @@
     :headers="headers"
     :items="submissions"
     :loading="loading"
+    :items-per-page="200"
     item-key="submission_id"
     hide-default-footer
     must-sort
