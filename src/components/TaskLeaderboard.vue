@@ -4,13 +4,26 @@
     :items="submissions"
     :loading="loading"
     item-key="submission_id"
-    hide-actions
+    hide-default-footer
     must-sort
-    expand
   >
     <template
+      v-for="header in headers"
+      v-slot:[`header.${header.value}`]="{ header }"
+    >
+      <div :key="header.value">
+        {{ header.text }}
+        <template v-if="header.subText">
+          <br>
+          &lt;{{ header.subText }}&gt;
+        </template>
+      </div>
+    </template>
+
+    <template
       slot="headerCell"
-      slot-scope="{ header }">
+      slot-scope="{ header }"
+    >
       <div>
         {{ header.text }}
         <template v-if="header.subText">
@@ -19,44 +32,47 @@
         </template>
       </div>
     </template>
-    <template
-      slot="items"
-      slot-scope="props"
-    >
+    <template #item="{ item: submission, isExpanded, expand }">
       <SubmissionRow
-        :submission="props.item"
-        :expanded="props.expanded || false"
-        @click.native="toggleExpand(props)"
+        :submission="submission"
+        :expanded="isExpanded"
+        @click.native="expand(!isExpanded)"
       />
     </template>
-    <template
-      slot="expand"
-      slot-scope="{ item: submission }">
-      <v-container
+    <template #expanded-item="{ item: submission, headers }">
+      <td
+        :colspan="headers.length"
         class="grey lighten-3 inset-shadow"
-        fluid
       >
-        <Task3SubmissionDetail
-          v-if="task.type === 'classification'"
-          :submission="submission"
-        />
-      </v-container>
+        <v-container fluid>
+          <SegmentationSubmissionDetail
+            v-if="task.type === 'segmentation'"
+            :submission="submission"
+          />
+          <ClassificationSubmissionDetail
+            v-else-if="task.type === 'classification'"
+            :submission="submission"
+          />
+        </v-container>
+      </td>
     </template>
   </v-data-table>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 import SubmissionRow from './SubmissionRow.vue';
 // import SubmissionDetail from './SubmissionDetail.vue';
-import Task3SubmissionDetail from './Task3SubmissionDetail.vue';
+import SegmentationSubmissionDetail from './SegmentationSubmissionDetail.vue';
+import ClassificationSubmissionDetail from './ClassificationSubmissionDetail.vue';
 
 export default {
   name: 'TaskLeaderboard',
 
   components: {
     SubmissionRow,
-    Task3SubmissionDetail,
+    SegmentationSubmissionDetail,
+    ClassificationSubmissionDetail,
   },
 
   props: {
@@ -70,14 +86,8 @@ export default {
     },
   },
 
-  data() {
-    return {
-      admin: false,
-    };
-  },
-
   computed: {
-    ...mapGetters([
+    ...mapGetters('leaderboard', [
       'getTaskById',
     ]),
     task() {
@@ -128,7 +138,6 @@ export default {
         },
         {
           text: 'Manuscript',
-          subText: this.admin ? `${this.missingManuscriptCount} missing` : null,
           value: 'approach_manuscript_url',
           sortable: false,
         },
@@ -142,52 +151,23 @@ export default {
           subText: this.task.primaryMetricName,
           value: 'overall_score',
         },
-        // ...(
-        //   this.admin ? [{
-        //     text: 'Manuscript Reviewed',
-        //     value: 'meta.documentationReview',
-        //     sortable: false,
-        //   }] : []
-        // ),
       ];
-    },
-  },
-  methods: {
-    ...mapActions([
-      'loadSubmissionDetail',
-    ]),
-    toggleExpand(props) {
-      // eslint-disable-next-line no-param-reassign
-      props.expanded = !props.expanded;
-      if (props.expanded) {
-        const submission = props.item;
-        this.loadSubmissionDetail({
-          taskId: this.taskId,
-          byTeam: this.byTeam,
-          submissionId: submission.submission_id,
-        });
-      }
     },
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="stylus">
-th
-  div
-    text-align center
-    width auto !important
-    display inline-block
-.inset-shadow
-  box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
-</style>
-<style lang="stylus">
-table.v-table tbody td:first-child,
-table.v-table tbody td:not(:first-child),
-table.v-table tbody th:first-child,
-table.v-table tbody th:not(:first-child),
-table.v-table thead td:first-child, table.v-table thead td:not(:first-child),
-table.v-table thead th:first-child, table.v-table thead th:not(:first-child)
-  padding 6px 24px
+  .v-data-table
+    td,th
+      padding 6px 24px
+
+    th
+      div
+        text-align center
+        width auto !important
+        display inline-block
+
+  .inset-shadow
+    box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
 </style>

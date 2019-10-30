@@ -3,7 +3,7 @@
     <v-content>
       <Leaderboard
         :challenge-id="challengeId"
-        :by-team-default="true"
+        :by-team-default="byTeamDefault"
       />
     </v-content>
   </v-app>
@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       challengeId: process.env.VUE_APP_CHALLENGE_ID,
+      byTeamDefault: process.env.VUE_APP_BY_TEAM_DEFAULT === 'true',
     };
   },
 };

@@ -3,12 +3,14 @@ import Vue from 'vue';
 import http from './http';
 
 export default {
+  namespaced: true,
   state: {
     challenge: {
       id: null,
       name: '',
     },
     tasks: {},
+    submissionScores: {},
   },
   getters: {
     getTaskById: state => taskId => state.tasks.find(aTask => aTask.id === taskId),
@@ -34,14 +36,10 @@ export default {
         Vue.set(task, 'submissions', submissions);
       }
     },
-    setScores(state, {
-      taskId, byTeam, submissionId, scores,
+    setSubmissionScores(state, {
+      submissionId, scores,
     }) {
-      const task = state.tasks.find(aTask => aTask.id === taskId);
-      const submissions = byTeam ? task.submissionsByTeam : task.submissions;
-      const submission = submissions
-        .find(aSubmission => aSubmission.submission_id === submissionId);
-      Vue.set(submission, 'scores', scores);
+      Vue.set(state.submissionScores, submissionId, scores);
     },
   },
   actions: {
@@ -79,21 +77,22 @@ export default {
       commit('setSubmissions', { taskId, byTeam, submissions });
     },
 
-    async loadSubmissionDetail({ commit }, { taskId, byTeam, submissionId }) {
-      try {
-        const submissionResponse = await http.request({
-          method: 'get',
-          url: `submission/${submissionId}/score`,
-        });
-
-        const scores = submissionResponse.data;
-
-        commit('setScores', {
-          taskId, byTeam, submissionId, scores,
-        });
-      } catch (e) {
-        // TODO: log error
+    async loadSubmissionScores({ commit, state }, { submissionId }) {
+      if (state.submissionScores[submissionId]) {
+        // Don't refech if cached
+        return;
       }
+
+      const submissionResponse = await http.request({
+        method: 'get',
+        url: `submission/${submissionId}/score`,
+      });
+
+      const scores = submissionResponse.data;
+
+      commit('setSubmissionScores', {
+        submissionId, scores,
+      });
     },
   },
 };

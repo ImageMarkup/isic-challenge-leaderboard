@@ -1,7 +1,10 @@
 <template functional>
   <component
-    :class="props.addclass"
     :is="props.header ? 'th' : 'td'"
+    :class="[
+      data.class,
+      data.staticClass
+    ]"
     v-bind="data.attrs"
   >
     <slot />
@@ -15,7 +18,7 @@
           small
           v-on="on"
         >
-          info
+          mdi-information
         </v-icon>
       </template>
       <span>
@@ -36,10 +39,6 @@ export default {
     header: {
       type: Boolean,
       default: false,
-    },
-    addclass: {
-      type: String,
-      default: '',
     },
   },
 };

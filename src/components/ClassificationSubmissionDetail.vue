@@ -1,21 +1,17 @@
 <template>
-  <table
-    class="metrics-table"
-    cellspacing="1"
-    width="100%"
-  >
+  <v-simple-table dense>
     <!--TODO: loading text -->
     <!--TODO: primary highlight -->
     <tr>
       <InfoTh
-        addclass="blue lighten-1 white--text"
+        class="text-center blue lighten-1 white--text"
         colspan="2"
         header
       >
         Aggregate Metrics
       </InfoTh>
       <InfoTh
-        addclass="blue lighten-1 white--text"
+        class="text-center blue lighten-2 white--text"
         header
         tooltip="Incorporates all diagnosis categories together"
       >
@@ -25,26 +21,29 @@
     <tr
       v-for="metric in aggregateMetrics"
       :key="metric.id"
-      class="aggregate"
     >
       <InfoTh
         :tooltip="metric.detail"
-        colspan="2">{{ metric.name }}</InfoTh>
+        colspan="2"
+      >
+        {{ metric.name }}
+      </InfoTh>
       <ValueTd
-        :value="loading ? null : submission.scores.aggregate[metric.id]"
+        :value="loading ? null : scores.aggregate[metric.id]"
+        class="green--text text--darken-2 font-weight-bold"
       />
     </tr>
-    <tr addclass="transparent" />
+    <tr class="spacer" />
     <tr>
       <th
-        class="blue lighten-1 white--text"
+        class="text-center blue lighten-1 white--text"
         rowspan="2"
         colspan="2"
       >
         Category Metrics
       </th>
       <InfoTh
-        addclass="blue lighten-1 white--text"
+        class="text-center blue lighten-2 white--text"
         header
         tooltip="The arithmetic mean (macro averaging) of values from all diagnosis categories"
         rowspan="2"
@@ -53,7 +52,7 @@
       </InfoTh>
       <th
         :colspan="categories.length"
-        class="blue lighten-1 white--text"
+        class="text-center blue lighten-1 white--text"
       >
         Diagnosis Category
       </th>
@@ -63,7 +62,7 @@
         v-for="category in categories"
         :key="category.id"
         :tooltip="category.name"
-        addclass="blue darken-2 white--text"
+        class="text-center blue darken-2 white--text"
         header
       >
         {{ category.id }}
@@ -82,22 +81,24 @@
     <tr
       v-for="metric in integralMetrics"
       :key="metric.id"
-      class="integral"
     >
-      <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
+      <InfoTh :tooltip="metric.detail">
+        {{ metric.name }}
+      </InfoTh>
       <ValueTd
-        :value="loading ? null : submission.scores.macro_average[metric.id]"
+        :value="loading ? null : scores.macro_average[metric.id]"
+        class="green--text text--darken-2 font-weight-bold"
       />
       <ValueTd
         v-for="category in categories"
         :key="category.id"
-        :value="loading ? null : submission.scores.per_category[metric.id][category.id]"
+        :value="loading ? null : scores.per_category[metric.id][category.id]"
       />
     </tr>
 
     <tr class="rotated-header">
       <InfoTh
-        addclass="grey darken-3 white--text rotate-text"
+        class="grey darken-3 white--text rotate-text"
         header
         rowspan="7"
         tooltip="Evaluated using a prediction threshold of 0.5"
@@ -108,41 +109,37 @@
     <tr
       v-for="metric in thresholdMetrics"
       :key="metric.id"
-      class="threshold"
     >
-      <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
+      <InfoTh :tooltip="metric.detail">
+        {{ metric.name }}
+      </InfoTh>
       <ValueTd
-        :value="loading ? null : submission.scores.macro_average[metric.id]"
+        :value="loading ? null : scores.macro_average[metric.id]"
+        class="green--text text--darken-2 font-weight-bold"
       />
       <ValueTd
         v-for="category in categories"
         :key="category.id"
-        :value="loading ? null : submission.scores.per_category[metric.id][category.id]"
+        :value="loading ? null : scores.per_category[metric.id][category.id]"
       />
     </tr>
-
-
-  </table>
+  </v-simple-table>
 </template>
 
 <script>
+import SubmissionDetailMixin from './SubmissionDetailMixin';
 import InfoTh from './InfoTh.vue';
 import ValueTd from './ValueTd.vue';
 
 export default {
-  name: 'Task3SubmissionDetail',
+  name: 'ClassificationSubmissionDetail',
 
   components: {
     InfoTh,
     ValueTd,
   },
 
-  props: {
-    submission: {
-      type: Object,
-      required: true,
-    },
-  },
+  mixins: [SubmissionDetailMixin],
 
   data() {
     return {
@@ -252,15 +249,12 @@ export default {
   },
 
   computed: {
-    loading() {
-      return !this.submission.scores;
-    },
     categories() {
       if (this.loading) {
         return [];
       }
       // Accuracy can be a representative for all per-category metrics
-      const usedCategoryIds = Object.keys(this.submission.scores.per_category.accuracy);
+      const usedCategoryIds = Object.keys(this.scores.per_category.accuracy);
       return this.possibleCategories.filter(
         category => usedCategoryIds.includes(category.id),
       );
@@ -270,30 +264,27 @@ export default {
 </script>
 
 <style scoped lang="stylus">
-  .bold
-    color #fff !important
-    font-weight bold
-  tr, th, td
-    height 35px !important
   th, td
-    background white
-  .metrics-table th,
-  .metrics-table td
     padding-top 12px !important
     padding-bottom 12px !important
-  .aggregate td:nth-child(3),
-  .integral td:nth-child(2),
-  .threshold td:nth-child(2)
-    background #F6FFF7
-    color #388E3C
-    font-weight 600
+
+  td
+    .green--text
+      background #F6FFF7
+
+  tr.spacer
+    height 35px
+    opacity 0
+
   .rotated-header
     height 0 !important
     margin 0 !important
     padding 0 !important
-  .rotated-header i
-    color white
-    transform rotate(180deg)
+
+    i
+      color white
+      transform rotate(180deg)
+
   .rotate-text
     white-space nowrap
     writing-mode sideways-lr
