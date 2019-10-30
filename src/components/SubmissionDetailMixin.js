@@ -8,8 +8,8 @@ export default {
     },
   },
 
-  created() {
-    this.loadSubmissionScores({
+  async mounted() {
+    await this.loadSubmissionScores({
       submissionId: this.submission.submission_id,
     });
   },

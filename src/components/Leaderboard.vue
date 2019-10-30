@@ -67,7 +67,7 @@ export default {
     ]),
   },
 
-  async created() {
+  async mounted() {
     await this.loadChallenge({ challengeId: this.challengeId });
   },
 
