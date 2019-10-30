@@ -1,10 +1,10 @@
 <template functional>
   <component
+    :is="props.header ? 'th' : 'td'"
     :class="[
       data.class,
       data.staticClass
     ]"
-    :is="props.header ? 'th' : 'td'"
     v-bind="data.attrs"
   >
     <slot />

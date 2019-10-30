@@ -35,16 +35,22 @@
         </a>
       </template>
       <template v-else>
-        <v-icon color="red">mdi-close</v-icon>
+        <v-icon color="red">
+          mdi-close
+        </v-icon>
       </template>
     </td>
     <td>
       <template v-if="submission.approach_uses_external_data">
-        <v-icon color="orange">mdi-earth</v-icon>
+        <v-icon color="orange">
+          mdi-earth
+        </v-icon>
         Yes
       </template>
       <template v-else>
-        <v-icon color="blue">mdi-earth-off</v-icon>
+        <v-icon color="blue">
+          mdi-earth-off
+        </v-icon>
         No
       </template>
     </td>

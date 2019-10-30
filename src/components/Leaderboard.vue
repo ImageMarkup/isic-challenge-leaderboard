@@ -2,7 +2,7 @@
   <div>
     <v-toolbar>
       <v-toolbar-title>{{ challenge.name }} Leaderboards</v-toolbar-title>
-      <v-spacer/>
+      <v-spacer />
       <v-toolbar-items>
         <v-switch
           v-model="byTeam"

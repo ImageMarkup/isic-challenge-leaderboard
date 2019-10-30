@@ -24,7 +24,10 @@
     >
       <InfoTh
         :tooltip="metric.detail"
-        colspan="2">{{ metric.name }}</InfoTh>
+        colspan="2"
+      >
+        {{ metric.name }}
+      </InfoTh>
       <ValueTd
         :value="loading ? null : scores.aggregate[metric.id]"
         class="green--text text--darken-2 font-weight-bold"
@@ -79,7 +82,9 @@
       v-for="metric in integralMetrics"
       :key="metric.id"
     >
-      <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
+      <InfoTh :tooltip="metric.detail">
+        {{ metric.name }}
+      </InfoTh>
       <ValueTd
         :value="loading ? null : scores.macro_average[metric.id]"
         class="green--text text--darken-2 font-weight-bold"
@@ -105,7 +110,9 @@
       v-for="metric in thresholdMetrics"
       :key="metric.id"
     >
-      <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
+      <InfoTh :tooltip="metric.detail">
+        {{ metric.name }}
+      </InfoTh>
       <ValueTd
         :value="loading ? null : scores.macro_average[metric.id]"
         class="green--text text--darken-2 font-weight-bold"

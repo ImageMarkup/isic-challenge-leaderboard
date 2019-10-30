@@ -8,8 +8,8 @@
     must-sort
   >
     <template
-      v-slot:[`header.${header.value}`]="{ header }"
       v-for="header in headers"
+      v-slot:[`header.${header.value}`]="{ header }"
     >
       <div :key="header.value">
         {{ header.text }}
@@ -22,7 +22,8 @@
 
     <template
       slot="headerCell"
-      slot-scope="{ header }">
+      slot-scope="{ header }"
+    >
       <div>
         {{ header.text }}
         <template v-if="header.subText">

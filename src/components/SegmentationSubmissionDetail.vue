@@ -24,7 +24,10 @@
     >
       <InfoTh
         :tooltip="metricType.detail"
-        colspan="2">{{ metricType.name }}</InfoTh>
+        colspan="2"
+      >
+        {{ metricType.name }}
+      </InfoTh>
       <ValueTd
         :value="scoreValue('macro_average', metricType.id)"
         class="green--text text--darken-2 font-weight-bold"
