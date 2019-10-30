@@ -23,15 +23,15 @@
       </InfoTh>
     </tr>
     <tr
-      v-for="metricType in aggregateMetricTypes"
-      :key="metricType.id"
+      v-for="metric in aggregateMetrics"
+      :key="metric.id"
       class="aggregate"
     >
       <InfoTh
-        :tooltip="metricType.detail"
-        colspan="2">{{ metricType.name }}</InfoTh>
+        :tooltip="metric.detail"
+        colspan="2">{{ metric.name }}</InfoTh>
       <ValueTd
-        :value="scoreValue('aggregate', metricType.id)"
+        :value="loading ? null : submission.scores.aggregate[metric.id]"
       />
     </tr>
     <tr addclass="transparent" />
@@ -80,18 +80,18 @@
       </th>
     </tr>
     <tr
-      v-for="metricType in integralMetricTypes"
-      :key="metricType.id"
+      v-for="metric in integralMetrics"
+      :key="metric.id"
       class="integral"
     >
-      <InfoTh :tooltip="metricType.detail">{{ metricType.name }}</InfoTh>
+      <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
       <ValueTd
-        :value="scoreValue('macro_average', metricType.id)"
+        :value="loading ? null : submission.scores.macro_average[metric.id]"
       />
       <ValueTd
         v-for="category in categories"
         :key="category.id"
-        :value="scoreValue(category.id, metricType.id)"
+        :value="loading ? null : submission.scores.per_category[metric.id][category.id]"
       />
     </tr>
 
@@ -106,18 +106,18 @@
       </InfoTh>
     </tr>
     <tr
-      v-for="metricType in thresholdMetricTypes"
-      :key="metricType.id"
+      v-for="metric in thresholdMetrics"
+      :key="metric.id"
       class="threshold"
     >
-      <InfoTh :tooltip="metricType.detail">{{ metricType.name }}</InfoTh>
+      <InfoTh :tooltip="metric.detail">{{ metric.name }}</InfoTh>
       <ValueTd
-        :value="scoreValue('macro_average', metricType.id)"
+        :value="loading ? null : submission.scores.macro_average[metric.id]"
       />
       <ValueTd
         v-for="category in categories"
         :key="category.id"
-        :value="scoreValue(category.id, metricType.id)"
+        :value="loading ? null : submission.scores.per_category[metric.id][category.id]"
       />
     </tr>
 
@@ -146,7 +146,7 @@ export default {
 
   data() {
     return {
-      aggregateMetricTypes: [
+      aggregateMetrics: [
         {
           id: 'balanced_accuracy',
           name: 'Balanced Multiclass Accuracy',
@@ -157,7 +157,7 @@ export default {
           primary: true,
         },
       ],
-      integralMetricTypes: [
+      integralMetrics: [
         {
           id: 'auc',
           name: 'AUC',
@@ -175,7 +175,7 @@ export default {
           detail: 'Area under the interpolated precision-recall (PR) curve',
         },
       ],
-      thresholdMetricTypes: [
+      thresholdMetrics: [
         {
           id: 'accuracy',
           name: 'Accuracy',
@@ -259,19 +259,11 @@ export default {
       if (this.loading) {
         return [];
       }
+      // Accuracy can be a representative for all per-category metrics
+      const usedCategoryIds = Object.keys(this.submission.scores.per_category.accuracy);
       return this.possibleCategories.filter(
-        category => Object.keys(this.submission.scores).includes(category.id),
+        category => usedCategoryIds.includes(category.id),
       );
-    },
-  },
-  methods: {
-    scoreValue(metricGroupId, metricTypeId) {
-      if (this.loading) {
-        // TODO: render blank while this loads
-        return null;
-      }
-      return this.submission.scores[metricGroupId]
-        && this.submission.scores[metricGroupId][metricTypeId];
     },
   },
 };
