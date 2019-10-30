@@ -4,14 +4,14 @@
     <!--TODO: primary highlight -->
     <tr>
       <InfoTh
-        class="blue lighten-1 white--text"
+        class="text-center blue lighten-1 white--text"
         colspan="2"
         header
       >
         Aggregate Metrics
       </InfoTh>
       <InfoTh
-        class="blue lighten-1 white--text"
+        class="text-center blue lighten-2 white--text"
         header
         tooltip="Incorporates all diagnosis categories together"
       >
@@ -36,14 +36,14 @@
     <tr class="spacer" />
     <tr>
       <th
-        class="blue lighten-1 white--text"
+        class="text-center blue lighten-1 white--text"
         rowspan="2"
         colspan="2"
       >
         Category Metrics
       </th>
       <InfoTh
-        class="blue lighten-1 white--text"
+        class="text-center blue lighten-2 white--text"
         header
         tooltip="The arithmetic mean (macro averaging) of values from all diagnosis categories"
         rowspan="2"
@@ -52,7 +52,7 @@
       </InfoTh>
       <th
         :colspan="categories.length"
-        class="blue lighten-1 white--text"
+        class="text-center blue lighten-1 white--text"
       >
         Diagnosis Category
       </th>
@@ -62,7 +62,7 @@
         v-for="category in categories"
         :key="category.id"
         :tooltip="category.name"
-        class="blue darken-2 white--text"
+        class="text-center blue darken-2 white--text"
         header
       >
         {{ category.id }}
