@@ -17,6 +17,17 @@
       >
         Value
       </InfoTh>
+      <th
+        class="white"
+        :colspan="categories.length"
+        rowspan="3"
+      >
+        <ClassificationRocPlot
+          :approach-name="submission.approach_name"
+          :rocs="!loading ? scores.rocs : {}"
+          :categories="categories"
+        />
+      </th>
     </tr>
     <tr
       v-for="metric in aggregateMetrics"
@@ -130,6 +141,7 @@
 import SubmissionDetailMixin from './SubmissionDetailMixin';
 import InfoTh from './InfoTh.vue';
 import ValueTd from './ValueTd.vue';
+import ClassificationRocPlot from './ClassificationRocPlot.vue';
 
 export default {
   name: 'ClassificationSubmissionDetail',
@@ -137,6 +149,7 @@ export default {
   components: {
     InfoTh,
     ValueTd,
+    ClassificationRocPlot,
   },
 
   mixins: [SubmissionDetailMixin],
@@ -273,7 +286,8 @@ export default {
       background #F6FFF7
 
   tr.spacer
-    height 35px
+    // height 35px
+    height 434px
     opacity 0
 
   .rotated-header
