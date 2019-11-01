@@ -1,6 +1,6 @@
 {
   "name": "@isic/challenge-leaderboard",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "scripts": {
     "serve": "vue-cli-service serve app/main.js",
     "build": "vue-cli-service build app/main.js",
