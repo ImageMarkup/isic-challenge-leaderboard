@@ -26,26 +26,13 @@ export default {
   computed: {
     rocData() {
       return this.categories.map((category) => {
-        let roc = this.rocs[category.id];
-
-        roc = sortBy(
-          Object.entries(roc)
-            .map(([threshold, points]) => ({
-              ...points,
-              threshold: parseFloat(threshold),
-            })),
-          point => point.threshold,
-        );
-
-        const fprs = roc.map(point => point.fpr);
-        const tprs = roc.map(point => point.tpr);
-        const thresholds = roc.map(point => point.threshold);
+        const roc = this.rocs[category.id];
 
         return {
           name: category.id,
-          x: fprs,
-          y: tprs,
-          text: thresholds,
+          x: roc.fpr,
+          y: roc.tpr,
+          text: roc.threshold,
           hovertemplate: 'FPR: %{x:.1%}<br>TPR: %{y:.1%}<br>Threshold: %{text:.3f}',
           type: 'scatter',
           mode: 'lines',
