@@ -3,7 +3,6 @@
 </template>
 <script>
 import Plotly from 'plotly.js-basic-dist';
-import sortBy from 'lodash/sortBy';
 
 export default {
   name: 'ClassificationRocPlot',
