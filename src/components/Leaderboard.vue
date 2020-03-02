@@ -12,6 +12,7 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-tabs
+      :value="defaultTab"
       class="task-tabs"
       hide-slider
       dark
@@ -51,6 +52,10 @@ export default {
     byTeamDefault: {
       type: Boolean,
       default: false,
+    },
+    defaultTab: {
+      type: Number,
+      default: undefined,
     },
   },
 
