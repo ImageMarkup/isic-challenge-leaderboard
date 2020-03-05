@@ -1,6 +1,6 @@
 <template>
   <v-data-table
-    :headers="headers"
+    :headers="tableHeaders"
     :items="submissions"
     :loading="loading"
     :items-per-page="200"
@@ -9,10 +9,10 @@
     must-sort
   >
     <template
-      v-for="header in headers"
-      v-slot:[`header.${header.value}`]="{ header }"
+      v-for="tableHeader in tableHeaders"
+      v-slot:[`header.${tableHeader.value}`]="{ header }"
     >
-      <div :key="header.value">
+      <div :key="tableHeader.value">
         {{ header.text }}
         <template v-if="header.subText">
           <br>
@@ -106,20 +106,20 @@ export default {
     },
 
     missingManuscriptCount() {
-      return this.submissions.filter(submission => !submission.approach_manuscript_url).length;
+      return this.submissions.filter((submission) => !submission.approach_manuscript_url).length;
     },
 
     uniqueTeamCount() {
-      return new Set(this.submissions.map(submission => submission.team_name)).size;
+      return new Set(this.submissions.map((submission) => submission.team_name)).size;
     },
 
     usedExternalCount() {
       return this.submissions.filter(
-        submission => submission.approach_uses_external_data,
+        (submission) => submission.approach_uses_external_data,
       ).length;
     },
 
-    headers() {
+    tableHeaders() {
       return [
         {
           text: 'Rank',

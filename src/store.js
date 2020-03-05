@@ -13,13 +13,13 @@ export default {
     submissionScores: {},
   },
   getters: {
-    getTaskById: state => taskId => state.tasks.find(aTask => aTask.id === taskId),
+    getTaskById: (state) => (taskId) => state.tasks.find((aTask) => aTask.id === taskId),
   },
   mutations: {
     setChallenge(state, { challenge }) {
       state.challenge.id = challenge.id;
       state.challenge.name = challenge.name;
-      state.tasks = challenge.tasks.map((task => ({
+      state.tasks = challenge.tasks.map(((task) => ({
         ...task,
         // TODO: This hardcoding of primaryMetricName is not always accurate
         primaryMetricName:
@@ -29,7 +29,7 @@ export default {
       })));
     },
     setSubmissions(state, { taskId, byTeam, submissions }) {
-      const task = state.tasks.find(aTask => aTask.id === taskId);
+      const task = state.tasks.find((aTask) => aTask.id === taskId);
       if (byTeam) {
         Vue.set(task, 'submissionsByTeam', submissions);
       } else {
@@ -52,8 +52,8 @@ export default {
       commit('setChallenge', { challenge });
 
       const loadResults = [].concat(
-        state.tasks.map(task => dispatch('loadSubmissions', { taskId: task.id, byTeam: true })),
-        state.tasks.map(task => dispatch('loadSubmissions', { taskId: task.id, byTeam: false })),
+        state.tasks.map((task) => dispatch('loadSubmissions', { taskId: task.id, byTeam: true })),
+        state.tasks.map((task) => dispatch('loadSubmissions', { taskId: task.id, byTeam: false })),
       );
       await Promise.all(loadResults);
     },
