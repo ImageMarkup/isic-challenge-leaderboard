@@ -27,7 +27,7 @@ export default {
     value: {
       required: true,
       default: null,
-      validator: value => typeof value === 'number' || value === null,
+      validator: (value) => typeof value === 'number' || value === null,
     },
   },
 };

@@ -269,7 +269,7 @@ export default {
       // Accuracy can be a representative for all per-category metrics
       const usedCategoryIds = Object.keys(this.scores.per_category.accuracy);
       return this.possibleCategories.filter(
-        category => usedCategoryIds.includes(category.id),
+        (category) => usedCategoryIds.includes(category.id),
       );
     },
   },
