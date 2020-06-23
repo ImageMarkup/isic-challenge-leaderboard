@@ -1,11 +1,11 @@
 <template>
   <v-app>
-    <v-content>
+    <v-main>
       <Leaderboard
         :challenge-id="challengeId"
         :by-team-default="byTeamDefault"
       />
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
