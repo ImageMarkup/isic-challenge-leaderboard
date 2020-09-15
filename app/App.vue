@@ -4,6 +4,7 @@
       <Leaderboard
         :challenge-id="challengeId"
         :by-team-default="byTeamDefault"
+        :default-task="defaultTask"
       />
     </v-main>
   </v-app>
@@ -17,11 +18,19 @@ export default {
   components: {
     Leaderboard,
   },
-  data() {
-    return {
-      challengeId: process.env.VUE_APP_CHALLENGE_ID,
-      byTeamDefault: process.env.VUE_APP_BY_TEAM_DEFAULT === 'true',
-    };
+  props: {
+    challengeId: {
+      type: Number,
+      required: true,
+    },
+    byTeamDefault: {
+      type: Boolean,
+      default: false,
+    },
+    defaultTask: {
+      type: Number,
+      default: undefined,
+    },
   },
 };
 </script>
