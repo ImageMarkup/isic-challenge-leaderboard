@@ -157,8 +157,9 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-  /deep/ .svg-container
-    margin-left auto !important
-    margin-right auto !important
+<style lang="scss" scoped>
+::v-deep .svg-container {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
 </style>

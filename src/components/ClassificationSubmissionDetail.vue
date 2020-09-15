@@ -276,30 +276,37 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-  th, td
-    padding-top 12px !important
-    padding-bottom 12px !important
+<style lang="scss" scoped>
+th, td {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
 
-  td
-    .green--text
-      background #F6FFF7
+td {
+  .green--text {
+    background: #F6FFF7;
+  }
+}
 
-  tr.spacer
-    // height 35px
-    height 434px
-    opacity 0
+tr.spacer {
+  // height: 35px;
+  height: 434px;
+  opacity: 0;
+}
 
-  .rotated-header
-    height 0 !important
-    margin 0 !important
-    padding 0 !important
+.rotated-header {
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 
-    i
-      color white
-      transform rotate(180deg)
+  i {
+    color: white;
+    transform: rotate(180deg);
+  }
+}
 
-  .rotate-text
-    white-space nowrap
-    writing-mode sideways-lr
+.rotate-text {
+  white-space: nowrap;
+  writing-mode: sideways-lr;
+}
 </style>

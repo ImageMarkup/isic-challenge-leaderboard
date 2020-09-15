@@ -162,17 +162,22 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-  .v-data-table
-    td,th
-      padding 6px 24px
+<style lang="scss" scoped>
+.v-data-table {
+  td, th {
+    padding: 6px 24px;
+  }
 
-    th
-      div
-        text-align center
-        width auto !important
-        display inline-block
+  th {
+    div {
+      text-align: center;
+      width: auto !important;
+      display: inline-block;
+    }
+  }
+}
 
-  .inset-shadow
-    box-shadow inset 0 0 15px rgba(0, 0, 0, .15)
+.inset-shadow {
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, .15);
+}
 </style>

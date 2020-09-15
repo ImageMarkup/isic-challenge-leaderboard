@@ -94,16 +94,20 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-  .v-tabs
-    .v-tabs-bar
-      height 61px
+<style lang="scss" scoped>
+.v-tabs {
+  .v-tabs-bar {
+    height: 61px;
 
-      .v-tab
-        margin 6px 6px 0
+    .v-tab {
+      margin: 6px 6px 0;
 
-        &.v-tab--active
-          background #fff
-          border-top 2px solid #1976d2
-          color #757575
+      &.v-tab--active {
+        background: #fff;
+        border-top: 2px solid #1976d2;
+        color: #757575;
+      }
+    }
+  }
+}
 </style>
