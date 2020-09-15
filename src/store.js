@@ -79,7 +79,7 @@ export default {
 
     async loadSubmissionScores({ commit, state }, { submissionId }) {
       if (state.submissionScores[submissionId]) {
-        // Don't refech if cached
+        // Don't re-fetch if cached
         return;
       }
 

@@ -12,7 +12,7 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-tabs
-      :value="defaultTab"
+      v-model="taskIndex"
       class="task-tabs"
       hide-slider
       dark
@@ -46,14 +46,14 @@ export default {
 
   props: {
     challengeId: {
-      type: String,
+      type: Number,
       required: true,
     },
     byTeamDefault: {
       type: Boolean,
       default: false,
     },
-    defaultTab: {
+    defaultTask: {
       type: Number,
       default: undefined,
     },
@@ -62,6 +62,7 @@ export default {
   data() {
     return {
       byTeam: this.byTeamDefault,
+      taskIndex: undefined,
     };
   },
 
@@ -70,6 +71,15 @@ export default {
       'challenge',
       'tasks',
     ]),
+  },
+
+  watch: {
+    tasks() {
+      // Don't do this after loadChallenge resolves, since loadChallenge is not granular enough to
+      // prevent a visual delay when the task tabs are rendered, but promise hasn't yet resolved
+      const taskIndex = this.tasks.findIndex((task) => task.id === this.defaultTask);
+      this.taskIndex = taskIndex !== -1 ? taskIndex : undefined;
+    },
   },
 
   async mounted() {
