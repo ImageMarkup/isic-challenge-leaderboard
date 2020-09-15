@@ -88,7 +88,8 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-  td
-    word-break break-word
+<style lang="scss" scoped>
+td {
+  word-break: break-word;
+}
 </style>

@@ -98,12 +98,15 @@ export default {
 };
 </script>
 
-<style scoped lang="stylus">
-  th, td
-    padding-top 12px !important
-    padding-bottom 12px !important
+<style lang="scss" scoped>
+th, td {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
 
-  td
-    .green--text
-      background #F6FFF7
+td {
+  .green--text {
+    background: #F6FFF7;
+  }
+}
 </style>
