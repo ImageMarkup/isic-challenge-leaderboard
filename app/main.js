@@ -1,20 +1,13 @@
 import Vue from 'vue';
-
-// Vuetify
-import Vuetify from 'vuetify';
-import 'vuetify/dist/vuetify.min.css';
-import '@mdi/font/css/materialdesignicons.css';
-
-// Vuex
 import Vuex from 'vuex';
+import '@mdi/font/css/materialdesignicons.css';
+import vuetify from '../src/vuetify';
 
 // Leaderboard
 import leaderboardPlugin from '../src/plugin';
 
 // Root app
 import App from './App.vue';
-
-Vue.use(Vuetify);
 
 Vue.use(Vuex);
 const store = new Vuex.Store({});
@@ -40,7 +33,7 @@ function optionalBool(value) {
 
 new Vue({
   store,
-  vuetify: new Vuetify({}),
+  vuetify,
   render(h) {
     const { dataset } = this.$el;
     const props = {
