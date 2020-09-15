@@ -78,7 +78,7 @@ export default {
       // Don't do this after loadChallenge resolves, since loadChallenge is not granular enough to
       // prevent a visual delay when the task tabs are rendered, but promise hasn't yet resolved
       const taskIndex = this.tasks.findIndex((task) => task.id === this.defaultTask);
-      this.taskIndex = taskIndex !== -1 ? taskIndex: undefined;
+      this.taskIndex = taskIndex !== -1 ? taskIndex : undefined;
     },
   },
 

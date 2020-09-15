@@ -48,6 +48,6 @@ new Vue({
       byTeamDefault: optionalBool(dataset.byTeamDefault ?? process.env.VUE_APP_BY_TEAM_DEFAULT),
       defaultTask: optionalInt(dataset.defaultTask ?? process.env.VUE_APP_DEFAULT_TASK),
     };
-    return h(App, {props});
+    return h(App, { props });
   },
 }).$mount('#app');
