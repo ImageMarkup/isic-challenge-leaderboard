@@ -31,5 +31,6 @@ yarn run lint
     <div id="app" data-challenge-id="39"></div>
     <!- "data-by-team-default" and "data-default-task" may also be set as attributes --->
     <script src=".../js/chunk-vendors...js" type="text/javascript"></script>
-    <script src=".../js/app.js" type="text/javascript"></script>
+    <script src=".../js/app...js" type="text/javascript"></script>
+</body>
 ```
