@@ -45,4 +45,4 @@ new Vue({
     };
     return h(App, { props });
   },
-}).$mount('#app');
+}).$mount('#leaderboard-app');
