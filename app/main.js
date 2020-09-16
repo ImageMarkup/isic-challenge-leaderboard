@@ -21,12 +21,14 @@ function optionalInt(value) {
 }
 
 function optionalBool(value) {
-  const lowerValue = value.toLowerCase();
-  if (lowerValue === 'true') {
-    return true;
-  }
-  if (lowerValue === 'false') {
-    return false;
+  if (value !== undefined) {
+    const lowerValue = value.toLowerCase();
+    if (lowerValue === 'true') {
+      return true;
+    }
+    if (lowerValue === 'false') {
+      return false;
+    }
   }
   return undefined;
 }
