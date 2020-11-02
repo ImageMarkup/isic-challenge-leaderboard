@@ -10,7 +10,7 @@
   >
     <template
       v-for="tableHeader in tableHeaders"
-      v-slot:[`header.${tableHeader.value}`]="{ header }"
+      #[`header.${tableHeader.value}`]="{ header }"
     >
       <div :key="tableHeader.value">
         {{ header.text }}
