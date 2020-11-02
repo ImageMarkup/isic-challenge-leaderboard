@@ -216,6 +216,21 @@ export default {
         },
       ],
       possibleCategories: [
+        // 2016
+        {
+          id: 'malignant',
+          name: 'Malignant',
+        },
+        // 2017
+        {
+          id: 'melanoma',
+          name: 'Melanoma',
+        },
+        {
+          id: 'seborrheic_keratosis',
+          name: 'Seborrheic keratosis',
+        },
+        // 2018 & 2019
         {
           id: 'MEL',
           name: 'Melanoma',
